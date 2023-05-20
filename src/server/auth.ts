@@ -6,6 +6,7 @@ import {
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import NaverProvider from "next-auth/providers/naver";
+import KakaoProvider from "next-auth/providers/kakao";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
@@ -55,6 +56,10 @@ export const authOptions: NextAuthOptions = {
     NaverProvider({
       clientId: env.NAVER_CLIENT_ID,
       clientSecret: env.NAVER_CLIENT_SECRET,
+    }),
+    KakaoProvider({
+      clientId: env.KAKAO_CLIENT_ID,
+      clientSecret: env.KAKAO_CLIENT_SECRET,
     }),
     /**
      * ...add more providers here.
