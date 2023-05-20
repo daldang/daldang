@@ -27,6 +27,8 @@ export const env = createEnv({
     NAVER_CLIENT_SECRET: z.string(),
     KAKAO_CLIENT_ID: z.string(),
     KAKAO_CLIENT_SECRET: z.string(),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
   },
 
   /**
@@ -53,5 +55,7 @@ export const env = createEnv({
     NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
     KAKAO_CLIENT_ID: process.env.KAKAO_CLIENT_ID,
     KAKAO_CLIENT_SECRET: process.env.KAKAO_CLIENT_SECRET,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   },
 });
