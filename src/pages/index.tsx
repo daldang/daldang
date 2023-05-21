@@ -1,5 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
@@ -7,20 +9,34 @@ import { api } from "~/utils/api";
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
+  const router = useRouter();
+
   return (
     <>
       <Head>
-        <title>달당 - daldang</title>
+        <title>달당 - 나만의 디저트 기록 일지</title>
         <meta name="description" content="디저트 기록 서비스 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start gap-5 border border-slate-300 p-4">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start gap-5 border border-slate-300 p-4">
         <div className="flex w-full flex-row items-center justify-between">
-          <div className="bg-amber-200 p-2">로고</div>
-          <div className="bg-amber-200 p-2">마이페이지</div>
+          <Link href="/">
+            <div className="bg-amber-200 p-2">로고</div>
+          </Link>
+          <button
+            type="button"
+            className="bg-amber-200 p-2"
+            onClick={() => void router.push("/mypage")}
+          >
+            마이페이지
+          </button>
         </div>
-        <button className="w-full bg-slate-500 px-2 py-4">
-          디저트 트렌드세터 테스트
+        <button
+          type="button"
+          className="w-full bg-slate-500 px-2 py-4 disabled:bg-slate-300 disabled:text-slate-50"
+          disabled
+        >
+          디저트 트렌드세터 테스트 하러 가기
         </button>
         <div className="flex h-40 w-full items-center justify-center bg-amber-200 px-2 py-4">
           달력(주별 / 월별)
@@ -34,7 +50,7 @@ const Home: NextPage = () => {
           </p>
           <AuthShowcase />
         </div>
-      </main>
+      </div>
     </>
   );
 };
