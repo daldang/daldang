@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
+import Calendar from "~/components/Calendar";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -38,9 +39,7 @@ const Home: NextPage = () => {
         >
           디저트 트렌드세터 테스트 하러 가기
         </button>
-        <div className="flex h-40 w-full items-center justify-center bg-amber-200 px-2 py-4">
-          달력(주별 / 월별)
-        </div>
+        <Calendar />
         <div className="flex h-96 w-full items-center justify-center border border-amber-200 px-2 py-4">
           주별/월별 기록 목록
         </div>
