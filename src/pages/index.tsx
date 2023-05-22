@@ -59,16 +59,16 @@ export default Home;
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+  const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
+    undefined,
+    {enabled: sessionData?.user !== undefined }
   );
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-slate-500">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
+        {desertLogs?.map((log) => <div key={log.id}>{ log.content}</div>)}
       </p>
       <button
         className="rounded-fullpx-10 bg-red-100 py-3 font-semibold text-slate-500 no-underline"

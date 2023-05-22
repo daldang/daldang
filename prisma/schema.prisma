@@ -21,6 +21,18 @@ model Example {
     updatedAt DateTime @updatedAt
 }
 
+model DesertLog {
+    id        String   @id @default(cuid())
+    date      DateTime @default(now())
+    content   String   @db.Text
+    authorId  String
+    author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([authorId])
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -53,13 +65,14 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String      @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?     @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    DesertLog     DesertLog[]
 }
 
 model VerificationToken {
