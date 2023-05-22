@@ -60,7 +60,7 @@ const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
   const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
-    undefined,
+    {authorId: sessionData?.user.id || ""},
     {enabled: sessionData?.user !== undefined }
   );
 

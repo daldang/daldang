@@ -4,15 +4,17 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const desertLogRouter = createTRPCRouter({
-  getAllDesertLogs: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.desertLog.findMany({
-      where: {
-        authorId: {
-          equals: ctx.session.user.id,
+  getAllDesertLogs: protectedProcedure
+    .input(z.object({ authorId: z.string() }))
+    .query(({ ctx }) => {
+      return ctx.prisma.desertLog.findMany({
+        where: {
+          authorId: {
+            equals: ctx.session.user.id,
+          },
         },
-      },
-    });
-  }),
+      });
+    }),
 
   createDesertLog: protectedProcedure
     .input(
