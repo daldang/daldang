@@ -13,4 +13,15 @@ export const desertLogRouter = createTRPCRouter({
       },
     });
   }),
+
+  createDesertLog: protectedProcedure
+    .input(z.object({ content: z.string(), date: z.date() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.desertLog.create({
+        data: {
+          authorId: ctx.session.user.id,
+          content: input.content,
+        },
+      });
+    }),
 });
