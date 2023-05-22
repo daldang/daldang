@@ -72,7 +72,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    DesertLog     DesertLog[]
+    desertLogs    DesertLog[]
 }
 
 model VerificationToken {
