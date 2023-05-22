@@ -15,22 +15,24 @@ export const desertLogRouter = createTRPCRouter({
   }),
 
   createDesertLog: protectedProcedure
-    .input(z.object({ content: z.string(), date: z.date() }))
+    .input(
+      z.object({ authorId: z.string(), content: z.string(), date: z.date() })
+    )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.desertLog.create({
         data: {
-          authorId: ctx.session.user.id,
+          authorId: input.authorId,
           content: input.content,
         },
       });
     }),
 
   deleteDesertLog: protectedProcedure
-    .input(z.object({ desertLogId: z.string() }))
+    .input(z.object({ authorId: z.string(), desertLogId: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.user.update({
         where: {
-          id: ctx.session.user.id,
+          id: input.authorId,
         },
         data: {
           desertLogs: {
