@@ -14,20 +14,21 @@ const RenderHeader = ({
   switchView,
 }: IProps) => {
   return (
-    <div className="flex w-full flex-row items-center justify-between">
+    <div className="flex w-full flex-row items-center justify-between px-4 py-2 text-sm">
       <button type="button" className="" onClick={prevMonth}>
-        prev
+        지난달
       </button>
       <button
         type="button"
         onClick={switchView}
         className="flex flex-col items-center justify-center"
       >
-        {/* <span>{format(currentMonth, "yyyy")}년</span> */}
-        <span> {format(currentMonth, "M")}월</span>
+        <span className="im-hyemin-b text-xl">
+          {format(currentMonth, "yyyy.MM")}
+        </span>
       </button>
       <button type="button" className="" onClick={nextMonth}>
-        next
+        다음달
       </button>
     </div>
   );

@@ -8,7 +8,6 @@ import {
   isSameMonth,
   isSameDay,
   addDays,
-  parse,
 } from "date-fns";
 
 interface IProps {
@@ -35,19 +34,17 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
       days.push(
         <button
           type="button"
-          className={`flex flex-col ${
+          className={`block px-1 py-4 text-sm ${
             !isSameMonth(day, monthStart)
               ? "disabled text-slate-300 "
               : isSameDay(day, selectedDate)
-              ? "text-red-500 "
+              ? "im-hyemin-b text-violet-400 "
               : format(currentMonth, "M") !== format(day, "M")
               ? "not-valid"
               : "valid"
           }`}
           key={day.toString()}
-          onClick={() =>
-            onDateClick(parse(cloneDay.toString(), "d", new Date()))
-          }
+          onClick={() => onDateClick(cloneDay)}
         >
           <span
             className={
@@ -64,10 +61,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
     }
 
     rows.push(
-      <div
-        className="flex w-full flex-row items-center justify-evenly"
-        key={day.toString()}
-      >
+      <div className="grid grid-cols-7" key={day.toString()}>
         {days}
       </div>
     );
@@ -75,7 +69,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-evenly">
+    <div className="flex w-full flex-col rounded-2xl bg-[#fefebf] px-2 py-4">
       {rows}
     </div>
   );
