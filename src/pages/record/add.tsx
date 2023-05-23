@@ -26,7 +26,7 @@ const RecordPage: NextPage = () => {
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-yellowy p-4">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-white p-4">
         <header className="flex w-full flex-row items-center justify-between">
           <Link href="/">
             <div className="bg-amber-200 p-2">로고</div>
@@ -35,6 +35,25 @@ const RecordPage: NextPage = () => {
             닫기
           </button>
         </header>
+        <div className="flex justify-center gap-20">
+          <Image
+            className="bg-yellowy"
+            src={`/characters/${desertSelected}.svg`}
+            alt={desertSelected}
+            width={150}
+            height={150}
+          />
+          <div>
+            <div className="text-3xl">{desertSelected}</div>
+            <div>some note</div>
+          </div>
+        </div>
+        <textarea
+          className="bg-yellowy text-center placeholder:text-center"
+          cols={40}
+          rows={5}
+          placeholder="디저트 로그를 입력"
+        ></textarea>
         <div className="im-hyemin-b flex w-full justify-center gap-4 border border-amber-200 align-middle text-xl">
           {desertSelected}
         </div>
