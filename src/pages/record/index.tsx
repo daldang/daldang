@@ -53,7 +53,7 @@ const RecordPage: NextPage = () => {
 
 export default RecordPage;
 
-type desertName = "croissant" | "eggBread" | "macaroon" | "muffin";
+export type desertName = "croissant" | "eggBread" | "macaroon" | "muffin";
 
 const SelectableDesert = ({ name }: { name: desertName }) => {
   const [, setDesertSelected] = useLocalStorage<desertName>(

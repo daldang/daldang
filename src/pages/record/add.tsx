@@ -2,23 +2,21 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
   keyDesertName,
   keyDesertSelected,
   useLocalStorage,
 } from "~/utils/hook";
+import { desertName } from ".";
 
-const RecordPage: NextPage = () => {
-  const [desertSelected, setDesertSelected] = useLocalStorage<desertName>(
+const RecordAddPage: NextPage = () => {
+  const [desertSelected] = useLocalStorage<desertName>(
     keyDesertSelected,
     "croissant"
   );
-  const [userDesertName, setUserDesertName] = useLocalStorage(
-    keyDesertName,
-    "not selected"
-  );
-  console.log(desertSelected);
-  console.log(userDesertName);
+  const [userDesertName] = useLocalStorage(keyDesertName, "not selected");
+  const [desertLog, setDesertLog] = useState("");
   return (
     <>
       <Head>
@@ -53,6 +51,8 @@ const RecordPage: NextPage = () => {
           cols={40}
           rows={5}
           placeholder="디저트 로그를 입력"
+          value={desertLog || ""}
+          onChange={(e) => setDesertLog(e.target.value)}
         ></textarea>
         <div className="im-hyemin-b flex w-full justify-center gap-4 border border-amber-200 align-middle text-xl">
           {desertSelected}
@@ -65,31 +65,4 @@ const RecordPage: NextPage = () => {
   );
 };
 
-export default RecordPage;
-
-type desertName = "croissant" | "eggBread" | "macaroon" | "muffin";
-
-const SelectableDesert = ({ name }: { name: desertName }) => {
-  const size = sizeFromDesertName(name);
-  return (
-    <Image
-      src={`/characters/${name}.svg`}
-      alt={name}
-      width={size.width}
-      height={size.height}
-    ></Image>
-  );
-};
-
-const sizeFromDesertName = (name: desertName) => {
-  switch (name) {
-    case "croissant":
-      return { width: 115.28, height: 63.69 };
-    case "eggBread":
-      return { width: 102.36, height: 68 };
-    case "macaroon":
-      return { width: 140.16, height: 101 };
-    case "muffin":
-      return { width: 95.76, height: 82.47 };
-  }
-};
+export default RecordAddPage;
