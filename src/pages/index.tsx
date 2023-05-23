@@ -5,10 +5,11 @@ import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
+
 import Calendar from "~/components/Calendar";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   const router = useRouter();
 
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start gap-5 border border-slate-300 p-4">
-        <div className="flex w-full flex-row items-center justify-between">
+        <section className="flex w-full flex-row items-center justify-between px-4">
           <Link href="/">
             <div className="bg-amber-200 p-2">로고</div>
           </Link>
@@ -31,24 +32,28 @@ const Home: NextPage = () => {
           >
             마이페이지
           </button>
-        </div>
-        <button
-          type="button"
-          className="w-full bg-slate-500 px-2 py-4 disabled:bg-slate-300 disabled:text-slate-50"
-          disabled
-        >
-          디저트 트렌드세터 테스트 하러 가기
-        </button>
+        </section>
+        <section className="w-full px-4">
+          <button
+            type="button"
+            className="w-full rounded-lg bg-[#f1f1ff] px-2 py-6 text-sm tracking-tighter disabled:opacity-50"
+            disabled
+          >
+            디저트 트렌드 세터 테스트 하러 가실래요?
+          </button>
+        </section>
         <Calendar />
-        <div className="flex h-96 w-full items-center justify-center border border-amber-200 px-2 py-4">
-          주별/월별 기록 목록
-        </div>
-        <div className="flex w-full flex-col items-center gap-2 border-t border-t-slate-500">
-          <p className="text-2xl text-slate-500">
+        <section className="w-full px-4">
+          <div className="flex w-full items-center justify-center border border-amber-200 p-4">
+            주별/월별 기록 목록
+          </div>
+        </section>
+        <section className="w-full px-4">
+          {/* <p className="text-2xl text-slate-500">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-          </p>
+          </p> */}
           <AuthShowcase />
-        </div>
+        </section>
       </div>
     </>
   );
@@ -60,18 +65,20 @@ const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
   const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
-    {authorId: sessionData?.user.id || ""},
-    {enabled: sessionData?.user !== undefined }
+    { authorId: sessionData?.user.id || "" },
+    { enabled: sessionData?.user !== undefined }
   );
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    <div className="flex w-full flex-col items-center justify-center border border-red-200 p-4">
       <p className="text-center text-2xl text-slate-500">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {desertLogs?.map((log) => <div key={log.id}>{ log.content}</div>)}
+        {desertLogs?.map((log) => (
+          <div key={log.id}>{log.content}</div>
+        ))}
       </p>
       <button
-        className="rounded-fullpx-10 bg-red-100 py-3 font-semibold text-slate-500 no-underline"
+        className="rounded-full bg-red-100 px-10 py-3 text-slate-500"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}

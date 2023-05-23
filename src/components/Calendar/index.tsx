@@ -1,17 +1,18 @@
 import { useState } from "react";
+
+import { addMonths, subMonths } from "date-fns";
+
 import Header from "./Header";
 import Days from "./Days";
 import MonthlyCells from "./Cells";
-
-import { addMonths, subMonths } from "date-fns";
+import WeeklyCalendar from "./WeeklyCalendar";
 
 const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isWeeklyView, setIsWeeklyView] = useState(true);
+  const [isWeeklyView, setIsWeeklyView] = useState(false);
 
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
-
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
 
   const switchView = () => setIsWeeklyView(!isWeeklyView);
@@ -19,24 +20,26 @@ const Calendar = () => {
   const onDateClick = (day: Date) => setSelectedDate(day);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center bg-amber-200">
-      <Header
-        currentMonth={currentMonth}
-        prevMonth={prevMonth}
-        nextMonth={nextMonth}
-        switchView={switchView}
-      />
-      <Days />
+    <>
       {isWeeklyView ? (
-        <div>위클리 준비중</div>
+        <WeeklyCalendar />
       ) : (
-        <MonthlyCells
-          currentMonth={currentMonth}
-          selectedDate={selectedDate}
-          onDateClick={onDateClick}
-        />
+        <div className="im-hyemin-r flex w-full flex-col items-center justify-center rounded-xl p-4">
+          <Header
+            currentMonth={currentMonth}
+            prevMonth={prevMonth}
+            nextMonth={nextMonth}
+            switchView={switchView}
+          />
+          <Days />
+          <MonthlyCells
+            currentMonth={currentMonth}
+            selectedDate={selectedDate}
+            onDateClick={onDateClick}
+          />
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
