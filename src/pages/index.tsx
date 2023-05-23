@@ -42,7 +42,9 @@ const Home: NextPage = () => {
             디저트 트렌드 세터 테스트 하러 가실래요?
           </button>
         </section>
-        <Calendar />
+        <section className="w-full px-4">
+          <Calendar />
+        </section>
         <section className="w-full px-4">
           <div className="flex w-full items-center justify-center border border-amber-200 p-4">
             주별/월별 기록 목록

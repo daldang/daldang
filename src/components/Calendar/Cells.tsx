@@ -38,7 +38,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
             !isSameMonth(day, monthStart)
               ? "disabled text-slate-300 "
               : isSameDay(day, selectedDate)
-              ? "im-hyemin-b text-purple-500 "
+              ? "im-hyemin-b text-violet-400 "
               : format(currentMonth, "M") !== format(day, "M")
               ? "not-valid"
               : "valid"
@@ -69,7 +69,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
   }
 
   return (
-    <div className="flex w-full flex-col rounded-2xl bg-[#fefebf] p-4">
+    <div className="flex w-full flex-col rounded-2xl bg-[#fefebf] px-2 py-4">
       {rows}
     </div>
   );
