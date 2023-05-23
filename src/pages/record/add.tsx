@@ -9,11 +9,16 @@ import {
 } from "~/utils/hook";
 
 const RecordPage: NextPage = () => {
+  const [desertSelected, setDesertSelected] = useLocalStorage<desertName>(
+    keyDesertSelected,
+    "croissant"
+  );
   const [userDesertName, setUserDesertName] = useLocalStorage(
     keyDesertName,
-    ""
+    "not selected"
   );
-
+  console.log(desertSelected);
+  console.log(userDesertName);
   return (
     <>
       <Head>
@@ -30,22 +35,12 @@ const RecordPage: NextPage = () => {
             닫기
           </button>
         </header>
-        <div className="im-hyemin-b flex w-full flex-row justify-center gap-4 border border-amber-200 align-middle text-xl">
-          기록할 디저트를 선택해주세요 !
+        <div className="im-hyemin-b flex w-full justify-center gap-4 border border-amber-200 align-middle text-xl">
+          {desertSelected}
         </div>
-        {/* TODO: 떠다니는 위치를 어떻게 정하지 ..? */}
-        <div className="p-10">
-          <SelectableDesert name="croissant"></SelectableDesert>
-          <SelectableDesert name="eggBread"></SelectableDesert>
-          <SelectableDesert name="macaroon"></SelectableDesert>
-          <SelectableDesert name="muffin"></SelectableDesert>
+        <div className="im-hyemin-b flex w-full justify-center gap-4 border border-amber-200 align-middle text-xl">
+          {userDesertName ? "" : desertSelected}
         </div>
-        <input
-          className="im-hyemin-b placeholder h-11 w-full text-center placeholder:text-center"
-          placeholder="디저트의 이름을 적어주세요"
-          value={userDesertName}
-          onChange={(e) => setUserDesertName(e.target.value)}
-        ></input>
       </div>
     </>
   );
@@ -56,20 +51,14 @@ export default RecordPage;
 type desertName = "croissant" | "eggBread" | "macaroon" | "muffin";
 
 const SelectableDesert = ({ name }: { name: desertName }) => {
-  const [, setDesertSelected] = useLocalStorage<desertName>(
-    keyDesertSelected,
-    "croissant"
-  );
   const size = sizeFromDesertName(name);
   return (
-    <Link href={"/record/add"} onClick={() => setDesertSelected(name)}>
-      <Image
-        src={`/characters/${name}.svg`}
-        alt={name}
-        width={size.width}
-        height={size.height}
-      ></Image>
-    </Link>
+    <Image
+      src={`/characters/${name}.svg`}
+      alt={name}
+      width={size.width}
+      height={size.height}
+    ></Image>
   );
 };
 
