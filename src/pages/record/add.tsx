@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   keyDesertName,
   keyDesertSelected,
@@ -11,12 +11,6 @@ import {
 import { desertName } from ".";
 
 const RecordAddPage: NextPage = () => {
-  const [desertSelected] = useLocalStorage<desertName>(
-    keyDesertSelected,
-    "croissant"
-  );
-  const [userDesertName] = useLocalStorage(keyDesertName, "not selected");
-  const [desertLog, setDesertLog] = useState("");
   return (
     <>
       <Head>
@@ -36,30 +30,25 @@ const RecordAddPage: NextPage = () => {
         <div className="flex justify-center gap-20">
           <Image
             className="bg-custom-yellow"
-            src={`/characters/${desertSelected}.svg`}
-            alt={desertSelected}
+            src={`/characters/croissant.svg`}
+            alt={"croissant"}
             width={150}
             height={150}
           />
-          <div>
-            <div className="text-3xl">{desertSelected}</div>
-            <div>some note</div>
-          </div>
         </div>
         <textarea
           className="bg-custom-yellow text-center placeholder:text-center"
           cols={40}
           rows={5}
           placeholder="디저트 로그를 입력"
-          value={desertLog || ""}
-          onChange={(e) => setDesertLog(e.target.value)}
         ></textarea>
-        <div className="im-hyemin-b flex w-full justify-center gap-4 border border-amber-200 align-middle text-xl">
-          {desertSelected}
-        </div>
-        <div className="im-hyemin-b flex w-full justify-center gap-4 border border-amber-200 align-middle text-xl">
-          {userDesertName ? "" : desertSelected}
-        </div>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          defaultValue={50}
+          className="bg-custom-red"
+        />
       </div>
     </>
   );
