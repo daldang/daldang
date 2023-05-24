@@ -5,7 +5,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        yellowy: "#FFFFDB",
+        "custom-red": "#FFAA8",
+        "custom-yellow": "#FEFEC0",
+        "custom-purple": "#E02CFF",
       },
     },
   },
