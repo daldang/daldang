@@ -21,7 +21,7 @@ const RecordPage: NextPage = () => {
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-yellowy p-4">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-custom-yellow p-4">
         <header className="flex w-full flex-row items-center justify-between">
           <Link href="/">
             <div className="bg-amber-200 p-2">로고</div>

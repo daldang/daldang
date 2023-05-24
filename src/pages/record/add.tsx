@@ -35,7 +35,7 @@ const RecordAddPage: NextPage = () => {
         </header>
         <div className="flex justify-center gap-20">
           <Image
-            className="bg-yellowy"
+            className="bg-custom-yellow"
             src={`/characters/${desertSelected}.svg`}
             alt={desertSelected}
             width={150}
@@ -47,7 +47,7 @@ const RecordAddPage: NextPage = () => {
           </div>
         </div>
         <textarea
-          className="bg-yellowy text-center placeholder:text-center"
+          className="bg-custom-yellow text-center placeholder:text-center"
           cols={40}
           rows={5}
           placeholder="디저트 로그를 입력"
