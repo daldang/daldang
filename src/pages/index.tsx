@@ -1,12 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
 
 import Calendar from "~/components/Calendar";
+import MainRecord from "~/components/MainRecord";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -20,42 +22,65 @@ const Home: NextPage = () => {
         <meta name="description" content="디저트 기록 서비스 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start gap-5 border border-slate-300 p-4">
-        <section className="flex w-full flex-row items-center justify-between px-4">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border border-slate-300 px-4 py-[40px]">
+        <section className="mb-[22px] flex w-full flex-row items-center justify-between">
           <Link href="/">
-            <div className="bg-amber-200 p-2">로고</div>
+            <div className="">
+              <Image
+                src="logo/logo_main.svg"
+                alt="메인 로고"
+                width={50}
+                height={50}
+              />
+            </div>
           </Link>
           <button
             type="button"
-            className="bg-amber-200 p-2"
+            className=""
             onClick={() => void router.push("/mypage")}
           >
-            마이페이지
+            <Image
+              src="logo/logo_mypage.svg"
+              alt="마이페이지 로고"
+              width={50}
+              height={50}
+            />
           </button>
         </section>
-        <section className="w-full px-4">
+        <section className="mb-[32px] w-full">
           <button
             type="button"
-            className="w-full rounded-lg bg-[#f1f1ff] px-2 py-6 text-sm tracking-tighter disabled:opacity-50"
-            disabled
+            className="flex w-full flex-col items-center justify-center rounded-lg bg-[#FCDCC0] px-[20px] py-3 text-sm text-[#725739]"
           >
-            디저트 트렌드 세터 테스트 하러 가실래요?
+            <span className="im-hyemin-b text-2xl tracking-wide">
+              디저트 트렌드 테스트
+            </span>
+            <span className="im-hyemin-r tracking-tighter">
+              나는 다양한 디저트를 얼마나 알고 있을까?
+            </span>
+            <Image
+              src="/icons/dessert_shifta.png"
+              width={389}
+              height={35}
+              alt="디저트 모음"
+              className="mt-3"
+            />
           </button>
         </section>
-        <section className="w-full px-4">
+        <section className="mb-[20px] w-full">
           <Calendar />
         </section>
-        <section className="w-full px-4">
-          <div className="flex w-full items-center justify-center border border-amber-200 p-4">
-            주별/월별 기록 목록
-          </div>
+        <section className="grid w-full grid-cols-1 gap-y-[20px]">
+          <MainRecord />
+          <MainRecord />
+          <MainRecord />
         </section>
-        <section className="w-full px-4">
-          {/* <p className="text-2xl text-slate-500">
+        {/* <section className="w-full px-4">
+          <p className="text-2xl text-slate-500">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-          </p> */}
+          </p>
           <AuthShowcase />
-        </section>
+        </section> */}
       </div>
     </>
   );

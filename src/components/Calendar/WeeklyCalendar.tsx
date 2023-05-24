@@ -1,12 +1,6 @@
 /* eslint-disable */
-import {
-  format,
-  startOfMonth,
-  startOfWeek,
-  isSameDay,
-  addDays,
-  isSameWeek,
-} from "date-fns";
+import { format, isAfter, startOfWeek, addDays, isSameWeek } from "date-fns";
+import Image from "next/image";
 
 interface IProps {
   switchView(): void;
@@ -48,22 +42,53 @@ interface IWHProps {
 }
 
 const WeeklyHeader = ({ switchView, prevWeek, nextWeek }: IWHProps) => {
-  return (
-    <div className="im-hyemin-r flex w-full flex-row items-center justify-between px-4 py-2 text-sm">
-      <button type="button" className="" onClick={prevWeek}>
-        지난주
-      </button>
-      <button
-        type="button"
-        onClick={switchView}
-        className="flex flex-col items-center justify-center"
+  const days = [];
+  const date = ["일", "월", "화", "수", "목", "금", "토"];
+
+  for (let i = 0; i < 7; i++) {
+    days.push(
+      <div
+        key={i}
+        className={`text-center ${
+          date[i] === "일"
+            ? "text-[#FF8986]"
+            : date[i] === "토"
+            ? "text-[#9CA0FF]"
+            : "text-[#7d7d7d]"
+        }`}
       >
-        <span className="im-hyemin-b text-xl">주간 기록 ▼</span>
-      </button>
-      <button type="button" className="" onClick={nextWeek}>
-        다음주
-      </button>
-    </div>
+        {date[i]}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="im-hyemin-r flex w-full flex-row items-center justify-between px-4 py-2 text-sm">
+        <button type="button" className="" onClick={prevWeek}>
+          지난주
+        </button>
+        <button
+          type="button"
+          onClick={switchView}
+          className="flex flex-row items-center justify-center"
+        >
+          <span className="im-hyemin-b mr-2 text-xl">주간 기록</span>
+          <Image
+            src="/icons/icon_down.svg"
+            alt="down button"
+            width={14}
+            height={14}
+          />
+        </button>
+        <button type="button" className="" onClick={nextWeek}>
+          다음주
+        </button>
+      </div>
+      <div className="im-hyemin-r grid w-full grid-cols-7 px-2 py-4">
+        {days}
+      </div>
+    </>
   );
 };
 
@@ -74,10 +99,8 @@ interface IWCProps {
 }
 
 const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
-  const weekStart = startOfMonth(currentWeek);
   const startDate = startOfWeek(currentWeek);
 
-  const dates = ["일", "월", "화", "수", "목", "금", "토"];
   let days = [];
   let day = startDate;
   let formattedDate = "";
@@ -88,53 +111,43 @@ const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
     days.push(
       <button
         type="button"
-        className={`flex flex-col items-center rounded-xl border border-slate-500 py-2 text-sm text-slate-500 ${
+        className={`im-hyemin-r flex flex-col items-center py-1 text-sm text-slate-500 ${
           !isSameWeek(day, currentWeek)
             ? "disabled text-slate-300 "
-            : isSameDay(day, selectedDate)
-            ? "border-0 bg-violet-300 text-white "
-            : format(currentWeek, "M") !== format(day, "M")
+            : // : isSameDay(day, selectedDate)
+            // ? "im-hyemin-b "
+            format(currentWeek, "M") !== format(day, "M")
             ? "not-valid"
             : "valid"
+        } ${
+          i === 0
+            ? "text-[#FF8986]"
+            : i === 6
+            ? "text-[#9CA0FF]"
+            : "text-[#7d7d7d]"
         }`}
         key={day.toString()}
         onClick={() => onDateClick(cloneDay)}
+        disabled={isAfter(day, new Date())}
       >
         <span
           className={
             format(currentWeek, "M") !== format(day, "M")
-              ? "text not-valid pb-2 text-lg font-bold"
-              : "pb-2 text-lg font-bold"
+              ? "text not-valid"
+              : ""
           }
         >
           {formattedDate}
         </span>
-        <span>{dates[i]}</span>
       </button>
     );
     day = addDays(day, 1);
   }
 
-  const recordedCheck = [];
-  for (let i = 0; i < 7; i++) {
-    if (i === 1 || i === 2) {
-      recordedCheck.push(
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-500 text-xs">
-          기록
-        </div>
-      );
-    } else {
-      recordedCheck.push(<div></div>);
-    }
-  }
-
   return (
-    <>
-      <div className="grid w-full grid-cols-7 gap-x-3 p-4">{days}</div>
-      <div className="grid w-full grid-cols-7 gap-x-3 p-4 pt-0">
-        {recordedCheck}
-      </div>
-    </>
+    <div className="grid w-full grid-cols-7 gap-x-3 rounded-2xl bg-[#fefebf] px-4 py-6">
+      {days}
+    </div>
   );
 };
 

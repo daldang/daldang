@@ -8,6 +8,7 @@ import {
   isSameMonth,
   isSameDay,
   addDays,
+  isAfter,
 } from "date-fns";
 
 interface IProps {
@@ -34,17 +35,24 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
       days.push(
         <button
           type="button"
-          className={`block px-1 py-4 text-sm ${
+          className={`block px-1 py-4 text-sm text-[#7d7d7d] ${
             !isSameMonth(day, monthStart)
-              ? "disabled text-slate-300 "
-              : isSameDay(day, selectedDate)
-              ? "im-hyemin-b text-violet-400 "
-              : format(currentMonth, "M") !== format(day, "M")
+              ? "disabled text-[#C6C6C6] "
+              : // : isSameDay(day, selectedDate)
+              // ? "im-hyemin-b "
+              format(currentMonth, "M") !== format(day, "M")
               ? "not-valid"
               : "valid"
+          } ${
+            i === 0
+              ? "text-[#FF8986]"
+              : i === 6
+              ? "text-[#9CA0FF]"
+              : "text-[#7d7d7d]"
           }`}
           key={day.toString()}
           onClick={() => onDateClick(cloneDay)}
+          disabled={isAfter(day, new Date())}
         >
           <span
             className={

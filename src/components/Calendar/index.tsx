@@ -25,7 +25,7 @@ const Calendar = () => {
   return (
     <>
       {isWeeklyView ? (
-        <div className="flex w-full flex-col items-center justify-center rounded-xl bg-[#fefebf] py-2">
+        <div className="flex w-full flex-col items-center justify-center rounded-xl py-2">
           <WeeklyCalendar
             switchView={switchView}
             currentWeek={currentWeek}
