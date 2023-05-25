@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useDesertLogRequest } from "~/utils/hook";
-import { type DesertCharacter } from "~/utils/type";
+import { arrayDesertCharacter, type DesertCharacter } from "~/utils/type";
 
 const RecordPage: NextPage = () => {
   const [request, setRequest] = useDesertLogRequest();
@@ -31,27 +31,16 @@ const RecordPage: NextPage = () => {
           기록할 디저트를 선택해주세요 !
         </div>
         {/* TODO: 떠다니는 위치를 어떻게 정하지 ..? */}
+
         <div className="p-10">
-          <DesertCharacterImage
-            char="croissant"
-            selected={request.desertCharacter}
-            handleSelect={handleSelecet}
-          ></DesertCharacterImage>
-          <DesertCharacterImage
-            char="eggBread"
-            selected={request.desertCharacter}
-            handleSelect={handleSelecet}
-          ></DesertCharacterImage>
-          <DesertCharacterImage
-            char="macaroon"
-            selected={request.desertCharacter}
-            handleSelect={handleSelecet}
-          ></DesertCharacterImage>
-          <DesertCharacterImage
-            char="muffin"
-            selected={request.desertCharacter}
-            handleSelect={handleSelecet}
-          ></DesertCharacterImage>
+          {arrayDesertCharacter.map((char) => (
+            <DesertCharacterImage
+              key={char}
+              char={char}
+              selected={request.desertCharacter}
+              onSelect={handleSelecet}
+            ></DesertCharacterImage>
+          ))}
         </div>
         <input
           className="im-hyemin-b placeholder h-11 w-full text-center placeholder:text-center"
@@ -71,15 +60,15 @@ export default RecordPage;
 const DesertCharacterImage = ({
   char,
   selected,
-  handleSelect,
+  onSelect,
 }: {
   char: DesertCharacter;
   selected?: string;
-  handleSelect: (char: DesertCharacter) => void;
+  onSelect: (char: DesertCharacter) => void;
 }) => {
   const size = sizeFromDesertCharacter(char);
   return (
-    <button onClick={() => handleSelect(char)} className="appearance-none">
+    <button onClick={() => onSelect(char)} className="appearance-none">
       <Image
         className={selected && char != selected ? "blur-[2px]" : ""}
         src={`/characters/${char}.svg`}
@@ -94,12 +83,20 @@ const DesertCharacterImage = ({
 const sizeFromDesertCharacter = (char: DesertCharacter) => {
   switch (char) {
     case "croissant":
-      return { width: 115.28, height: 63.69 };
+      return { width: 134.9, height: 127.45 };
     case "eggBread":
-      return { width: 102.36, height: 68 };
+      return { width: 114.48, height: 94.23 };
     case "macaroon":
-      return { width: 140.16, height: 101 };
+      return { width: 162.96, height: 125.66 };
     case "muffin":
+      return { width: 112.01, height: 104.87 };
+    case "canele":
+      return { width: 97, height: 68 };
+    case "pencake":
+      return { width: 108.53, height: 79.58 };
+    case "fishBread":
+      return { width: 95.76, height: 82.47 };
+    case "mochi":
       return { width: 95.76, height: 82.47 };
   }
 };
