@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { ButtonPrimary, ButtonSecondary } from "~/components/Button";
 import { useDesertLogRequest } from "~/utils/hook";
 import { arrayDesertCharacter, type DesertCharacter } from "~/utils/type";
 
@@ -31,8 +32,7 @@ const RecordPage: NextPage = () => {
           기록할 디저트를 선택해주세요 !
         </div>
         {/* TODO: 떠다니는 위치를 어떻게 정하지 ..? */}
-
-        <div className="p-10">
+        <div className={request.desertCharacter ? "" : "bg-white/70" + " p10"}>
           {arrayDesertCharacter.map((char) => (
             <DesertCharacterImage
               key={char}
@@ -50,6 +50,14 @@ const RecordPage: NextPage = () => {
             setRequest({ ...request, desertName: e.target.value })
           }
         ></input>
+        <div className="flex justify-end gap-5">
+          <Link href={"/"}>
+            <ButtonSecondary>취소하기</ButtonSecondary>
+          </Link>
+          <Link href="/record/add">
+            <ButtonPrimary>다음!</ButtonPrimary>
+          </Link>
+        </div>
       </div>
     </>
   );
@@ -68,7 +76,7 @@ const DesertCharacterImage = ({
 }) => {
   const size = sizeFromDesertCharacter(char);
   return (
-    <button onClick={() => onSelect(char)} className="appearance-none">
+    <button onClick={() => onSelect(char)}>
       <Image
         className={selected && char != selected ? "blur-[2px]" : ""}
         src={`/characters/${char}.svg`}
