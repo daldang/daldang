@@ -2,17 +2,14 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  keyDesertName,
-  keyDesertSelected,
-  useLocalStorage,
-} from "~/utils/hook";
+import { useDesertLogRequest } from "~/utils/hook";
+import { type DesertCharacter } from "~/utils/type";
 
 const RecordPage: NextPage = () => {
-  const [userDesertName, setUserDesertName] = useLocalStorage(
-    keyDesertName,
-    ""
-  );
+  const [request, setRequest] = useDesertLogRequest();
+  const handleSelecet = (charSelected: DesertCharacter) => {
+    setRequest({ ...request, desertCharacter: charSelected });
+  };
 
   return (
     <>
@@ -35,16 +32,34 @@ const RecordPage: NextPage = () => {
         </div>
         {/* TODO: 떠다니는 위치를 어떻게 정하지 ..? */}
         <div className="p-10">
-          <SelectableDesert name="croissant"></SelectableDesert>
-          <SelectableDesert name="eggBread"></SelectableDesert>
-          <SelectableDesert name="macaroon"></SelectableDesert>
-          <SelectableDesert name="muffin"></SelectableDesert>
+          <DesertCharacterImage
+            char="croissant"
+            selected={request.desertCharacter}
+            handleSelect={handleSelecet}
+          ></DesertCharacterImage>
+          <DesertCharacterImage
+            char="eggBread"
+            selected={request.desertCharacter}
+            handleSelect={handleSelecet}
+          ></DesertCharacterImage>
+          <DesertCharacterImage
+            char="macaroon"
+            selected={request.desertCharacter}
+            handleSelect={handleSelecet}
+          ></DesertCharacterImage>
+          <DesertCharacterImage
+            char="muffin"
+            selected={request.desertCharacter}
+            handleSelect={handleSelecet}
+          ></DesertCharacterImage>
         </div>
         <input
           className="im-hyemin-b placeholder h-11 w-full text-center placeholder:text-center"
           placeholder="디저트의 이름을 적어주세요"
-          value={userDesertName}
-          onChange={(e) => setUserDesertName(e.target.value)}
+          value={request.desertName}
+          onChange={(e) =>
+            setRequest({ ...request, desertName: e.target.value })
+          }
         ></input>
       </div>
     </>
@@ -53,28 +68,31 @@ const RecordPage: NextPage = () => {
 
 export default RecordPage;
 
-export type desertName = "croissant" | "eggBread" | "macaroon" | "muffin";
-
-const SelectableDesert = ({ name }: { name: desertName }) => {
-  const [, setDesertSelected] = useLocalStorage<desertName>(
-    keyDesertSelected,
-    "croissant"
-  );
-  const size = sizeFromDesertName(name);
+const DesertCharacterImage = ({
+  char,
+  selected,
+  handleSelect,
+}: {
+  char: DesertCharacter;
+  selected?: string;
+  handleSelect: (char: DesertCharacter) => void;
+}) => {
+  const size = sizeFromDesertCharacter(char);
   return (
-    <Link href={"/record/add"} onClick={() => setDesertSelected(name)}>
+    <button onClick={() => handleSelect(char)} className="appearance-none">
       <Image
-        src={`/characters/${name}.svg`}
-        alt={name}
+        className={selected && char != selected ? "blur-[2px]" : ""}
+        src={`/characters/${char}.svg`}
+        alt={char}
         width={size.width}
         height={size.height}
       ></Image>
-    </Link>
+    </button>
   );
 };
 
-const sizeFromDesertName = (name: desertName) => {
-  switch (name) {
+const sizeFromDesertCharacter = (char: DesertCharacter) => {
+  switch (char) {
     case "croissant":
       return { width: 115.28, height: 63.69 };
     case "eggBread":
