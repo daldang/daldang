@@ -15,7 +15,7 @@ const RenderHeader = ({
 }: IProps) => {
   return (
     <div className="flex w-full flex-row items-center justify-between px-4 py-2 text-sm">
-      <button type="button" className="" onClick={prevMonth}>
+      <button type="button" className="text-[#444444]" onClick={prevMonth}>
         지난달
       </button>
       <button
@@ -23,11 +23,11 @@ const RenderHeader = ({
         onClick={switchView}
         className="flex flex-col items-center justify-center"
       >
-        <span className="im-hyemin-b text-xl">
+        <span className="im-hyemin-b text-xl text-[#222222]">
           {format(currentMonth, "yyyy.MM")}
         </span>
       </button>
-      <button type="button" className="" onClick={nextMonth}>
+      <button type="button" className="text-[#444444]" onClick={nextMonth}>
         다음달
       </button>
     </div>

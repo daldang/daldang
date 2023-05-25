@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
@@ -14,10 +15,17 @@ const MyPage: NextPage = () => {
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start gap-5 border border-slate-300 p-4">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border border-slate-300 px-4 py-[40px]">
         <div className="flex w-full flex-row items-center justify-between">
           <Link href="/">
-            <div className="bg-amber-200 p-2">로고</div>
+            <div className="">
+              <Image
+                src="logo/logo_main.svg"
+                alt="메인 로고"
+                width={50}
+                height={50}
+              />
+            </div>
           </Link>
           <button
             type="button"

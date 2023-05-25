@@ -8,10 +8,10 @@ const RenderDays = () => {
         key={i}
         className={`text-center ${
           date[i] === "일"
-            ? "text-red-400"
+            ? "text-[#FF8986]"
             : date[i] === "토"
-            ? "text-indigo-400"
-            : "text-slate-400"
+            ? "text-[#9CA0FF]"
+            : "text-[#7d7d7d]"
         }`}
       >
         {date[i]}
