@@ -1,4 +1,3 @@
-import { contextProps } from "@trpc/react-query/shared";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -24,6 +23,7 @@ export const desertLogRouter = createTRPCRouter({
         date: z.date(),
         desertCharacter: z.string(),
         desertName: z.string(),
+        score: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {

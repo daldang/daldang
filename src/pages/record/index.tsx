@@ -3,11 +3,11 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { ButtonPrimary, ButtonSecondary } from "~/components/Button";
-import { useDesertLogRequest } from "~/utils/hook";
+import { useSessionStorageRequestState } from "~/utils/hook";
 import { arrayDesertCharacter, type DesertCharacter } from "~/utils/type";
 
 const RecordPage: NextPage = () => {
-  const [request, setRequest] = useDesertLogRequest();
+  const [request, setRequest] = useSessionStorageRequestState();
   const handleSelecet = (charSelected: DesertCharacter) => {
     setRequest({ ...request, desertCharacter: charSelected });
   };
@@ -32,7 +32,11 @@ const RecordPage: NextPage = () => {
           기록할 디저트를 선택해주세요 !
         </div>
         {/* TODO: 떠다니는 위치를 어떻게 정하지 ..? */}
-        <div className={request.desertCharacter ? "" : "bg-white/70" + " p10"}>
+        <div
+          className={
+            (request.desertCharacter == "" ? "" : "bg-white/70") + " p10"
+          }
+        >
           {arrayDesertCharacter.map((char) => (
             <DesertCharacterImage
               key={char}
