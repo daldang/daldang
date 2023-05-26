@@ -15,6 +15,18 @@ export const desertLogRouter = createTRPCRouter({
       });
     }),
 
+  getDesertLogById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.desertLog.findFirst({
+        where: {
+          id: {
+            equals: input.id,
+          },
+        },
+      });
+    }),
+
   createDesertLog: protectedProcedure
     .input(
       z.object({

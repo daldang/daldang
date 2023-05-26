@@ -3,20 +3,30 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { ButtonPrimary } from "~/components/Button";
 import { api } from "~/utils/api";
 import { useSessionStorageRequestState } from "~/utils/hook";
 
 const RecordAddPage: NextPage = () => {
+  const router = useRouter();
   const { data: sessionData } = useSession();
   const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
   const trpc = api.desertLog.createDesertLog.useMutation();
 
   const handleSubmit = () => {
-    trpc.mutate({
-      ...request,
-      authorId: sessionData?.user.id || "",
-    });
+    trpc.mutate(
+      {
+        ...request,
+        authorId: sessionData?.user.id || "",
+      },
+      {
+        onSuccess(data, variables, context) {
+          removeItem();
+          void router.push(`/records/${data.id}`);
+        },
+      }
+    );
     removeItem();
   };
 
