@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -15,6 +17,10 @@ const Home: NextPage = () => {
 
   const router = useRouter();
 
+  const [isWeeklyView, setIsWeeklyView] = useState(true);
+
+  const switchView = () => setIsWeeklyView(!isWeeklyView);
+
   return (
     <>
       <Head>
@@ -22,17 +28,15 @@ const Home: NextPage = () => {
         <meta name="description" content="디저트 기록 서비스 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border border-slate-300 px-4 py-[40px]">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border-x border-slate-200 px-4 py-[40px]">
         <section className="mb-[22px] flex w-full flex-row items-center justify-between">
           <Link href="/">
-            <div className="">
-              <Image
-                src="logo/logo_main.svg"
-                alt="메인 로고"
-                width={50}
-                height={50}
-              />
-            </div>
+            <Image
+              src="logo/logo_main.svg"
+              alt="메인 로고"
+              width={50}
+              height={50}
+            />
           </Link>
           <button
             type="button"
@@ -68,13 +72,15 @@ const Home: NextPage = () => {
           </button>
         </section>
         <section className="mb-[20px] w-full">
-          <Calendar />
+          <Calendar isWeeklyView={isWeeklyView} switchView={switchView} />
         </section>
-        <section className="grid w-full grid-cols-1 gap-y-[20px]">
-          <MainRecord />
-          <MainRecord />
-          <MainRecord />
-        </section>
+        {isWeeklyView && (
+          <section className="grid w-full grid-cols-1 gap-y-[20px]">
+            <MainRecord />
+            <MainRecord />
+            <MainRecord />
+          </section>
+        )}
         {/* <section className="w-full px-4">
           <p className="text-2xl text-slate-500">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
