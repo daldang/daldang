@@ -2,12 +2,9 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 const MyPage: NextPage = () => {
-  const router = useRouter();
-
   return (
     <>
       <Head>
@@ -15,7 +12,7 @@ const MyPage: NextPage = () => {
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="border-slate-2 00 mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border-x py-[40px]">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border-x-0 border-slate-200 py-[40px] md:border-x">
         <section className="relative mb-8 flex w-full flex-row items-center justify-between px-4">
           <Link href="/">
             <Image
@@ -40,10 +37,18 @@ const MyPage: NextPage = () => {
           </div>
           <div className="flex flex-col items-start justify-between">
             <div className="mb-[26px] flex flex-col items-start">
-              <span className="mb-[7px] text-[22px] leading-none text-[#222222]">
+              <span className="mb-[8px] text-[22px] leading-none text-[#222222]">
                 닉네임을 정해주세요
               </span>
-              <span className="im-hyemin-r text-base text-[#5c5c5c]">
+              <span className="im-hyemin-r flex flex-row items-center text-base text-[#5c5c5c]">
+                <button type="button" className="mr-[18px]">
+                  <Image
+                    src="/level/lv1.svg"
+                    alt="레벨 아이콘"
+                    width={23}
+                    height={18}
+                  />
+                </button>
                 디저트 입문자
               </span>
             </div>
