@@ -8,7 +8,7 @@ export default {
       colors: {
         "custom-red": "#FFAAA8",
         "custom-yellow": "#fefec0",
-        "custom-purple": "#e02cff",
+        "custom-purple": "#e0c2ff",
       },
       backgroundImage: {
         note: "url('/images/back.png')",

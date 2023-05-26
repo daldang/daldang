@@ -1,6 +1,14 @@
 /* eslint-disable */
-import { format, isAfter, startOfWeek, addDays, isSameWeek } from "date-fns";
 import Image from "next/image";
+
+import {
+  format,
+  isAfter,
+  startOfWeek,
+  addDays,
+  isSameWeek,
+  isSameDay,
+} from "date-fns";
 
 interface IProps {
   switchView(): void;
@@ -111,7 +119,7 @@ const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
     days.push(
       <button
         type="button"
-        className={`im-hyemin-r flex flex-col items-center py-1 text-sm text-slate-500 ${
+        className={`im-hyemin-r relative block px-1 py-4 text-sm text-[#7d7d7d] ${
           !isSameWeek(day, currentWeek)
             ? "disabled text-slate-300 "
             : // : isSameDay(day, selectedDate)
@@ -130,22 +138,32 @@ const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
         onClick={() => onDateClick(cloneDay)}
         disabled={isAfter(day, new Date())}
       >
-        <span
-          className={
-            format(currentWeek, "M") !== format(day, "M")
-              ? "text not-valid"
-              : ""
-          }
-        >
-          {formattedDate}
-        </span>
+        {isSameDay(day, new Date()) ? (
+          <Image
+            src="/markers/marker.svg"
+            alt="marker"
+            width={40}
+            height={40}
+            className="absolute left-0 right-0 top-1/2 mx-auto -translate-y-[50%]"
+          />
+        ) : (
+          <span
+            className={
+              format(currentWeek, "M") !== format(day, "M")
+                ? "text not-valid"
+                : ""
+            }
+          >
+            {formattedDate}
+          </span>
+        )}
       </button>
     );
     day = addDays(day, 1);
   }
 
   return (
-    <div className="grid w-full grid-cols-7 gap-x-3 rounded-2xl bg-[#fefebf] px-4 py-6">
+    <div className="grid w-full grid-cols-7 gap-x-3 gap-y-1 rounded-2xl bg-[#fefebf] p-4">
       {days}
     </div>
   );

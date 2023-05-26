@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { addMonths, subMonths, addWeeks, subWeeks } from "date-fns";
 
@@ -7,13 +7,16 @@ import Days from "./Days";
 import MonthlyCells from "./Cells";
 import WeeklyCalendar from "./WeeklyCalendar";
 
-const Calendar = () => {
+interface IProps {
+  isWeeklyView: boolean;
+  switchView(): void;
+}
+
+const Calendar = ({ isWeeklyView, switchView }: IProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isWeeklyView, setIsWeeklyView] = useState(true);
 
-  const switchView = () => setIsWeeklyView(!isWeeklyView);
   const onDateClick = (day: Date) => setSelectedDate(day);
 
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
@@ -21,6 +24,10 @@ const Calendar = () => {
 
   const prevWeek = () => setCurrentWeek(subWeeks(currentWeek, 1));
   const nextWeek = () => setCurrentWeek(addWeeks(currentWeek, 1));
+
+  useEffect(() => {
+    console.log("selected date:: ", selectedDate);
+  }, [selectedDate]);
 
   return (
     <>
