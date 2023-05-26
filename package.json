@@ -24,7 +24,9 @@
     "next-auth": "^4.21.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "superjson": "1.12.2",
+    "superjson": "^1.12.2",
+    "use-local-storage-state": "^18.3.3",
+    "use-session-storage-state": "^18.1.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {

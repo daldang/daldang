@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { type NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 
@@ -74,19 +74,10 @@ const Home: NextPage = () => {
         <section className="mb-[20px] w-full">
           <Calendar isWeeklyView={isWeeklyView} switchView={switchView} />
         </section>
-        {isWeeklyView && (
-          <section className="grid w-full grid-cols-1 gap-y-[20px]">
-            <MainRecord />
-            <MainRecord />
-            <MainRecord />
-          </section>
-        )}
-        {/* <section className="w-full px-4">
-          <p className="text-2xl text-slate-500">
-            {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-          </p>
+        <section className="w-full px-4">
+          <p className="text-2xl text-slate-500"></p>
           <AuthShowcase />
-        </section> */}
+        </section>
       </div>
     </>
   );

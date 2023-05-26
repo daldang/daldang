@@ -1,9 +1,35 @@
 import { type NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { ButtonPrimary } from "~/components/Button";
+import { api } from "~/utils/api";
+import { useSessionStorageRequestState } from "~/utils/hook";
 
 const RecordAddPage: NextPage = () => {
+  const router = useRouter();
+  const { data: sessionData } = useSession();
+  const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
+  const trpc = api.desertLog.createDesertLog.useMutation();
+
+  const handleSubmit = () => {
+    trpc.mutate(
+      {
+        ...request,
+        authorId: sessionData?.user.id || "",
+      },
+      {
+        onSuccess(data, variables, context) {
+          removeItem();
+          void router.push(`/records/${data.id}`);
+        },
+      }
+    );
+    removeItem();
+  };
+
   return (
     <>
       <Head>
@@ -23,14 +49,16 @@ const RecordAddPage: NextPage = () => {
         <div className="flex justify-start gap-10">
           <Image
             className="bg-secondary"
-            src={`/characters/croissant.svg`}
-            alt={"croissant"}
+            src={`/characters/${request.desertCharacter}.svg`}
+            alt={request.desertCharacter}
             width={150}
             height={150}
           />
           <div className="flex-col bg-slate-50">
-            <div className="py-1 text-2xl">디저트 이름</div>
-            <time className="py-1 text-center">2023.05.21</time>
+            <div className="py-1 text-2xl">{request.desertName}</div>
+            <time className="py-1 text-center">
+              {request.date.toDateString()}
+            </time>
             <div className="flex py-1">
               <svg
                 width="32"
@@ -58,6 +86,8 @@ const RecordAddPage: NextPage = () => {
           defaultValue={`가나다라마바사 아자차카타파하 왕 맛있다 
           맛평가를 해주세요 맛평가를 해주세요! 맛평가를 해주세요 !?
           바닐라 마카롱은 근본이지 근본 이즈 베스트 짱 !`}
+          value={request.content}
+          onChange={(e) => setRequest({ ...request, content: e.target.value })}
         ></textarea>
         <div className="text text-primary">행복 칼로리</div>
         <input
@@ -65,6 +95,10 @@ const RecordAddPage: NextPage = () => {
           min={0}
           max={100}
           defaultValue={50}
+          value={request.score}
+          onChange={(e) =>
+            setRequest({ ...request, score: e.target.valueAsNumber })
+          }
           className="range range-primary"
         />
         <div className="flex w-full justify-between text-3xl">
@@ -74,7 +108,7 @@ const RecordAddPage: NextPage = () => {
         </div>
         <div className="flex w-full justify-between">
           <button className="pl-5 text-4xl">📷</button>
-          <button className="btn-accent btn text-white">저장하기</button>
+          <ButtonPrimary onClick={() => handleSubmit()}>저장하기</ButtonPrimary>
         </div>
       </div>
     </>
