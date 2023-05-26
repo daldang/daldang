@@ -1,5 +1,5 @@
-import { type Config } from "tailwindcss";
 import daisyui from "daisyui";
+import { type Config } from "tailwindcss";
 
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -9,6 +9,9 @@ export default {
         "custom-red": "#FFAAA8",
         "custom-yellow": "#fefec0",
         "custom-purple": "#e02cff",
+      },
+      backgroundImage: {
+        note: "url('/images/back.png')",
       },
     },
   },

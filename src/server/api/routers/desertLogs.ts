@@ -1,4 +1,3 @@
-import { contextProps } from "@trpc/react-query/shared";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -16,6 +15,18 @@ export const desertLogRouter = createTRPCRouter({
       });
     }),
 
+  getDesertLogById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.desertLog.findFirst({
+        where: {
+          id: {
+            equals: input.id,
+          },
+        },
+      });
+    }),
+
   createDesertLog: protectedProcedure
     .input(
       z.object({
@@ -24,6 +35,7 @@ export const desertLogRouter = createTRPCRouter({
         date: z.date(),
         desertCharacter: z.string(),
         desertName: z.string(),
+        score: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
