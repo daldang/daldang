@@ -4,15 +4,29 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState, type ChangeEventHandler } from "react";
 import { ButtonPrimary } from "~/components/Button";
 import { api } from "~/utils/api";
 import { useSessionStorageRequestState } from "~/utils/hook";
 
 const RecordAddPage: NextPage = () => {
   const router = useRouter();
+
   const { data: sessionData } = useSession();
+
+  const [imageFile, setImageFile] = useState<File | undefined>();
+  const [objectURL, setObjectURL] = useState<string | undefined>();
   const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
+
   const trpc = api.desertLog.createDesertLog.useMutation();
+
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]); // never undefiend in here
+      setObjectURL(URL.createObjectURL(e.target.files[0]));
+    }
+  };
 
   const handleSubmit = () => {
     trpc.mutate(
@@ -50,7 +64,7 @@ const RecordAddPage: NextPage = () => {
           <Image
             className="bg-secondary"
             src={`/characters/${request.desertCharacter}.svg`}
-            alt={request.desertCharacter}
+            alt={"character"}
             width={150}
             height={150}
           />
@@ -107,9 +121,17 @@ const RecordAddPage: NextPage = () => {
           <span>😋</span>
         </div>
         <div className="flex w-full justify-between">
-          <button className="pl-5 text-4xl">📷</button>
+          <input
+            type="file"
+            accept="image/*"
+            className="file-input-primary file-input w-3/5"
+            onChange={handleFileChange}
+          ></input>
           <ButtonPrimary onClick={() => handleSubmit()}>저장하기</ButtonPrimary>
         </div>
+        {objectURL && (
+          <Image src={objectURL} alt="image" width={500} height={500}></Image>
+        )}
       </div>
     </>
   );
