@@ -15,6 +15,7 @@ export function useSessionStorageRequestState() {
       desertName: "",
       desertCharacter: "",
       score: 50,
+      image: "",
     },
     serializer: SuperJSON,
   });
