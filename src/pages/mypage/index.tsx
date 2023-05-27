@@ -94,8 +94,6 @@ export default function MyPage({
   const handleChangeName = (e: any) => {
     const { value: name } = e.target;
     setMyInfo({ ...myInfo, name });
-    // TODO: integrate api
-    // setRequest({ ...request, name });
   };
 
   const handleFileChange = (file: File) => {
@@ -296,11 +294,14 @@ export default function MyPage({
                       🍯
                     </span>
                   </div>
-                  {/* TODO: add all  */}
                   <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
-                    지금까지 총{" "}
+                    지금까지 총
                     <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
-                      50kcal
+                      {desertLogs.reduce(
+                        (sum, current) => sum + current.score,
+                        0
+                      )}
+                      kcal
                     </span>{" "}
                     의 행복 칼로리를 저장했어요
                   </p>
