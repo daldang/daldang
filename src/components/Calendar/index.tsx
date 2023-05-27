@@ -12,9 +12,10 @@ import WeeklyCalendar from "./WeeklyCalendar";
 interface IProps {
   isWeeklyView: boolean;
   switchView(): void;
+  data?: any[];
 }
 
-const Calendar = ({ isWeeklyView, switchView }: IProps) => {
+const Calendar = ({ isWeeklyView, switchView, data }: IProps) => {
   const router = useRouter();
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -46,6 +47,7 @@ const Calendar = ({ isWeeklyView, switchView }: IProps) => {
             onDateClick={onDateClick}
             prevWeek={prevWeek}
             nextWeek={nextWeek}
+            data={data}
           />
         </div>
       ) : (
@@ -61,6 +63,7 @@ const Calendar = ({ isWeeklyView, switchView }: IProps) => {
             currentMonth={currentMonth}
             selectedDate={selectedDate}
             onDateClick={onDateClick}
+            data={data}
           />
         </div>
       )}

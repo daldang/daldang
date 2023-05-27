@@ -1,29 +1,44 @@
 import Image from "next/image";
 
-const MainRecord = () => {
+import { getDay } from "date-fns";
+
+interface IProps {
+  data: {
+    content: string;
+    desertName: string;
+    score: number;
+    createdAt: Date;
+    desertCharacter: string;
+  };
+}
+
+const MainRecord = ({ data }: IProps) => {
+  const date = ["일", "월", "화", "수", "목", "금", "토"];
+
   return (
     <div className="flex w-full flex-row items-center justify-center gap-x-3 rounded-lg bg-[#F9F9F8] px-[12px] py-[14px]">
       <div className="flex h-full flex-col items-center justify-between">
         <Image
-          src="/characters/macaroon.svg"
+          src={`/characters/${data.desertCharacter}.svg`}
           alt="디저트 캐릭터"
           width={70}
           height={70}
         />
-        <span className="mt-[10px] text-base text-[#FF6562]">100kcal</span>
+        <span className="mt-[10px] text-base text-[#FF6562]">
+          {data.score.toString()}kcal
+        </span>
       </div>
-      <div className="flex w-full flex-col items-center justify-between">
+      <div className="flex h-full w-full flex-col items-start justify-start">
         <div className="mb-1 flex w-full flex-row items-center justify-between">
           <span className="block text-base text-[#222222]">
-            샤인머스캣 마카롱
+            {data.desertName}
           </span>
           <span className="im-hyemin-r block text-sm text-[#ffaaa8]">
-            월요일
+            {date[Number(getDay(data.createdAt))]}요일
           </span>
         </div>
-        <p className="break-keep text-sm text-[#595959]">
-          언니랑 오랜만에 최애 마카롱집 간 날- 샤인머스캣 오랜만에 먹었는데
-          다섯개 사왔어야 했다...진짜 미친맛..
+        <p className="w-full break-keep text-left text-sm text-[#595959]">
+          {data.content}
         </p>
       </div>
     </div>

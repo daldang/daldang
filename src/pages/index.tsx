@@ -21,6 +21,13 @@ const Home: NextPage = () => {
 
   const switchView = () => setIsWeeklyView(!isWeeklyView);
 
+  const { data: sessionData } = useSession();
+
+  const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
+    { authorId: sessionData?.user.id || "" },
+    { enabled: sessionData?.user !== undefined }
+  );
+
   return (
     <>
       <Head>
@@ -73,10 +80,28 @@ const Home: NextPage = () => {
           </a>
         </section>
         <section className="mb-[20px] w-full">
-          <Calendar isWeeklyView={isWeeklyView} switchView={switchView} />
+          <Calendar
+            isWeeklyView={isWeeklyView}
+            switchView={switchView}
+            data={desertLogs}
+          />
         </section>
-        <section className="w-full px-4">
-          <p className="text-2xl text-slate-500"></p>
+        <section className="grid w-full grid-cols-1 gap-y-[20px]">
+          {desertLogs &&
+            desertLogs.map((log) => (
+              <MainRecord
+                key={log.id}
+                data={{
+                  content: log.content,
+                  desertName: log.desertName,
+                  createdAt: log.createdAt,
+                  desertCharacter: log.desertCharacter,
+                  score: log.score,
+                }}
+              />
+            ))}
+        </section>
+        <section className="mt-3 w-full px-4">
           <AuthShowcase />
         </section>
       </div>
@@ -89,18 +114,10 @@ export default Home;
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
-  const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
-    { authorId: sessionData?.user.id || "" },
-    { enabled: sessionData?.user !== undefined }
-  );
-
   return (
-    <div className="flex w-full flex-col items-center justify-center border border-red-200 p-4">
+    <div className="flex w-full flex-col items-center justify-center border border-red-200">
       <p className="text-center text-2xl text-slate-500">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {desertLogs?.map((log) => (
-          <div key={log.id}>{log.content}</div>
-        ))}
       </p>
       <button
         className="rounded-full bg-red-100 px-10 py-3 text-slate-500"
