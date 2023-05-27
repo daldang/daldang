@@ -69,7 +69,7 @@ const AuthButton = ({ provider }: { provider: ClientSafeProvider }) => {
           alt="login-button"
           width={282}
           height={57}
-        ></Image>
+        />
       </button>
     </div>
   );
