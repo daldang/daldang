@@ -7,15 +7,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ButtonPrimary } from "~/components/Button";
-        import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
+import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { useSessionStorageRequestState } from "~/utils/hook";
-import { arrayDesertCharacter, type DesertCharacter } from "~/utils/type";
+import {
+  arrayDesertCharacter,
+  convertName,
+  type DesertCharacter,
+} from "~/utils/type";
 
 export default function RecordPage({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) {
   const router = useRouter();
-  
+
   const [request, setRequest] = useSessionStorageRequestState();
 
   const handleSelecet = (charSelected: DesertCharacter) => {
@@ -26,7 +30,7 @@ export default function RecordPage({}: InferGetServerSidePropsType<
     if (request.desertName === "") {
       setRequest({
         ...request,
-        desertName: convertName(request.desertCharacter) || "",
+        desertName: convertName(request.desertCharacter),
       });
     }
 
@@ -151,28 +155,6 @@ const sizeFromDesertCharacter = (char: DesertCharacter) => {
   }
 };
 
-const convertName = (charName: DesertCharacter | string) => {
-  switch (charName) {
-    case "croissant":
-      return "크루아상";
-    case "eggBread":
-      return "계란빵";
-    case "macaroon":
-      return "마카롱";
-    case "muffin":
-      return "머핀";
-    case "canele":
-      return "까눌레";
-    case "pencake":
-      return "팬케이크";
-    case "fishBread":
-      return "붕어빵";
-    case "mochi":
-      return "모찌";
-  }
-};
-
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return getServerSideSessionPropsOrRedirect(context);
 }
-

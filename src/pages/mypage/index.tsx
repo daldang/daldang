@@ -15,6 +15,7 @@ import { api } from "~/utils/api";
 
 import Modal from "~/components/Modal";
 import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
+import { convertName } from "~/utils/type";
 
 const levelData = [
   {
@@ -70,6 +71,25 @@ export default function MyPage({
 
   // 레벨 안내 modal
   const [modalLevel, setModalLevel] = useState(false);
+
+  // get most frequent desert character from desertLogs
+  const emptyMap = new Map<string, number>();
+  const charToCount: Map<string, number> =
+    desertLogs?.reduce((map, current) => {
+      map.set(
+        current.desertCharacter,
+        (map.get(current.desertCharacter) || 0) + 1
+      );
+      return map;
+    }, emptyMap) || emptyMap;
+  const frequentChar: string = convertName(
+    Array.from(charToCount.keys()).reduce((left, right) =>
+      (charToCount.get(left) || 0) > (charToCount.get(right) || 0)
+        ? left
+        : right
+    )
+  );
+
   const handleOpenLevel = () => {
     document.body.style.overflow = "hidden";
     setModalLevel(true);
@@ -312,7 +332,6 @@ export default function MyPage({
                       📑
                     </span>
                   </div>
-                  {/* TODO: add all  */}
                   <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                     지금까지 총{" "}
                     <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
@@ -327,11 +346,10 @@ export default function MyPage({
                       🍴
                     </span>
                   </div>
-                  {/* TODO: add all  */}
                   <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                     지금까지{" "}
                     <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
-                      마카롱
+                      {frequentChar}
                     </span>{" "}
                     에 대한 기록이 가장 많아요
                   </p>
