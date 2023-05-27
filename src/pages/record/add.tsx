@@ -5,6 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Script from "next/script";
 import { useState } from "react";
 import { ButtonPrimary } from "~/components/Button";
 import { api } from "~/utils/api";
@@ -15,6 +16,8 @@ const RecordAddPage: NextPage = () => {
 
   const { data: sessionData } = useSession();
 
+  const renderMap = true;
+
   const [imageFile, setImageFile] = useState<File | undefined>();
   const [objectURL, setObjectURL] = useState<string | undefined>();
   const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
@@ -22,6 +25,12 @@ const RecordAddPage: NextPage = () => {
   const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
 
   const trpc = api.desertLog.createDesertLog.useMutation();
+
+  const handleClickLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position);
+    });
+  };
 
   const handleFileChange = (file: File) => {
     setImageFile(file);
@@ -56,6 +65,7 @@ const RecordAddPage: NextPage = () => {
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bdc52af2e9ffb6d562133146ebfb57d7&autoload=false" />
       <div className="im-hyemin-b  mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-white p-4">
         <header className="flex w-full flex-row items-center justify-between">
           <Link href="/">
@@ -78,7 +88,7 @@ const RecordAddPage: NextPage = () => {
             <time className="py-1 text-center">
               {request.date.toDateString()}
             </time>
-            <div className="flex py-1">
+            <button className="flex py-1" onClick={handleClickLocation}>
               <svg
                 width="32"
                 height="32"
@@ -94,9 +104,10 @@ const RecordAddPage: NextPage = () => {
               <div className="p-1 text-center text-primary">
                 서울 특별시 합정동
               </div>
-            </div>
+            </button>
           </div>
         </div>
+        {renderMap && <KakaoMap></KakaoMap>}
         <textarea
           className="bg-custom-yellow text-center placeholder:text-center"
           cols={40}
@@ -143,3 +154,21 @@ const RecordAddPage: NextPage = () => {
 };
 
 export default RecordAddPage;
+
+const KakaoMap = () => {
+  return (
+    <>
+      <div id="map" className="mx-10 h-[400px] w-[400px] bg-blue-300"></div>;
+      <Script id="map-script">{`
+window.kakao.maps.load(() => {
+  var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+  var options = { //지도를 생성할 때 필요한 기본 옵션
+    center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
+    level: 3 //지도의 레벨(확대, 축소 정도)
+  };
+  var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+})
+`}</Script>
+    </>
+  );
+};
