@@ -114,10 +114,11 @@ const RecordAddPage: NextPage = () => {
           type="range"
           min={0}
           max={100}
-          value={request.score}
-          onChange={(e) =>
-            setRequest({ ...request, score: e.target.valueAsNumber })
-          }
+          defaultValue={50}
+          onChange={(e) => {
+            console.log(e.target.valueAsNumber);
+            setRequest({ ...request, score: e.target.valueAsNumber });
+          }}
           className="range range-primary"
         />
         <div className="flex w-full justify-between text-3xl">

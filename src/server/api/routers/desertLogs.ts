@@ -44,6 +44,7 @@ export const desertLogRouter = createTRPCRouter({
       return ctx.prisma.desertLog.create({
         data: {
           authorId: input.authorId,
+          score: input.score,
           content: input.content,
           date: input.date,
           desertName: input.desertName,
