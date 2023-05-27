@@ -2,14 +2,29 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { ButtonPrimary, ButtonSecondary } from "~/components/Button";
+import { useRouter } from "next/router";
+import { ButtonPrimary } from "~/components/Button";
 import { useSessionStorageRequestState } from "~/utils/hook";
 import { arrayDesertCharacter, type DesertCharacter } from "~/utils/type";
 
 const RecordPage: NextPage = () => {
+  const router = useRouter();
+
   const [request, setRequest] = useSessionStorageRequestState();
+
   const handleSelecet = (charSelected: DesertCharacter) => {
     setRequest({ ...request, desertCharacter: charSelected });
+  };
+
+  const handleNextStep = () => {
+    if (request.desertName === "") {
+      setRequest({
+        ...request,
+        desertName: convertName(request.desertCharacter) || "",
+      });
+    }
+
+    void router.push("/record/add");
   };
 
   return (
@@ -19,22 +34,44 @@ const RecordPage: NextPage = () => {
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-custom-yellow p-4">
-        <header className="flex w-full flex-row items-center justify-between">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start bg-[#FFFFDB] px-4 py-[40px]">
+        <header className="mb-[22px] flex w-full flex-row items-center justify-between">
           <Link href="/">
-            <div className="bg-amber-200 p-2">로고</div>
+            <Image
+              src="logo/logo_main.svg"
+              alt="메인 로고"
+              width={50}
+              height={50}
+            />
           </Link>
-          <button type="button" className="bg-amber-200 p-2">
-            닫기
-          </button>
+          {request.desertCharacter !== "" ? (
+            <button
+              type="button"
+              className="relative h-9 w-9 rounded-full bg-custom-red p-0 text-center text-white"
+              onClick={() => setRequest({ ...request, desertCharacter: "" })}
+            >
+              <span className="absolute left-[9px] top-[9px] inline-block h-[2px] w-[18px] translate-y-[8px] -rotate-45 rounded-[2px] bg-white" />
+              <span className="absolute bottom-[9px] right-[9px] inline-block h-[2px] w-[18px] -translate-y-[8px] rotate-45 rounded-[2px] bg-white" />
+            </button>
+          ) : (
+            <button type="button" className="">
+              <Image
+                src="logo/logo_mypage.svg"
+                alt="마이페이지 로고"
+                width={50}
+                height={50}
+              />
+            </button>
+          )}
         </header>
-        <div className="im-hyemin-b flex w-full flex-row justify-center gap-4 border border-amber-200 align-middle text-xl">
+        <p className="im-hyemin-b mb-6 w-full text-center text-xl text-[#222222]">
           기록할 디저트를 선택해주세요 !
-        </div>
+        </p>
         {/* TODO: 떠다니는 위치를 어떻게 정하지 ..? */}
         <div
           className={
-            (request.desertCharacter == "" ? "" : "bg-white/70") + " p10"
+            (request.desertCharacter === "" ? "" : "bg-white/70") +
+            " flex flex-wrap items-center justify-around p-2"
           }
         >
           {arrayDesertCharacter.map((char) => (
@@ -47,20 +84,17 @@ const RecordPage: NextPage = () => {
           ))}
         </div>
         <input
-          className="im-hyemin-b placeholder h-11 w-full text-center placeholder:text-center"
-          placeholder="디저트의 이름을 적어주세요"
+          className="im-hyemin-r mb-8 mt-8 h-11 w-full rounded-md bg-[#F6F6D6] text-center text-[#444444] placeholder:text-center placeholder:text-[#AEAEAE] focus:bg-white focus:outline-none"
+          placeholder="디저트의 이름을 적어주세요  ✏️"
           value={request.desertName}
           onChange={(e) =>
             setRequest({ ...request, desertName: e.target.value })
           }
-        ></input>
-        <div className="flex justify-end gap-5">
-          <Link href={"/"}>
-            <ButtonSecondary>취소하기</ButtonSecondary>
-          </Link>
-          <Link href="/record/add">
-            <ButtonPrimary>다음!</ButtonPrimary>
-          </Link>
+        />
+        <div className="im-hyemin-r w-full text-right">
+          <ButtonPrimary onClick={handleNextStep}>
+            <span className="text-lg text-white">기록하러 가기 &gt;</span>
+          </ButtonPrimary>
         </div>
       </div>
     </>
@@ -110,5 +144,26 @@ const sizeFromDesertCharacter = (char: DesertCharacter) => {
       return { width: 95.76, height: 82.47 };
     case "mochi":
       return { width: 95.76, height: 82.47 };
+  }
+};
+
+const convertName = (charName: string) => {
+  switch (charName) {
+    case "croissant":
+      return "크루아상";
+    case "eggBread":
+      return "계란빵";
+    case "macaroon":
+      return "마카롱";
+    case "muffin":
+      return "머핀";
+    case "canele":
+      return "까눌레";
+    case "pencake":
+      return "팬케이크";
+    case "fishBread":
+      return "붕어빵";
+    case "mochi":
+      return "모찌";
   }
 };

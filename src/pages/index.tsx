@@ -13,8 +13,6 @@ import Calendar from "~/components/Calendar";
 import MainRecord from "~/components/MainRecord";
 
 const Home: NextPage = () => {
-  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   const router = useRouter();
 
   const [isWeeklyView, setIsWeeklyView] = useState(true);
@@ -104,7 +102,7 @@ const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
   return (
-    <div className="flex w-full flex-col items-center justify-center border border-red-200">
+    <div className="flex w-full flex-col items-center justify-center">
       <p className="text-center text-2xl text-slate-500">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
       </p>
