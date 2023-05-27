@@ -59,6 +59,7 @@ export default function MyPage({
 
   // mutate, query
   const { mutate: updateUser } = api.user.updateUser.useMutation();
+  const { mutate: deleteUser } = api.user.delteUser.useMutation();
 
   const [myInfo, setMyInfo] = useState({
     image: sessionData.user.image || NO_PROFILE_IMAGE,
@@ -196,8 +197,14 @@ export default function MyPage({
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        // TODO: Add signout api mutation
-        console.log("탈퇴!");
+        deleteUser(
+          { userId: sessionData.user.id },
+          {
+            onSuccess() {
+              router.push("/signin");
+            },
+          }
+        );
       }
     });
   };
