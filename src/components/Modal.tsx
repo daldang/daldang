@@ -1,25 +1,32 @@
-interface IProps {
-  children?: any;
-  closeModal?: () => void;
-}
+/* eslint-disable */
+import React, { useRef } from "react";
 
-const Modal = ({ children, closeModal }: IProps) => {
+import { useOnClickOutside } from "usehooks-ts";
+
+type Props = {
+  children: React.ReactNode;
+  open: boolean;
+  disableClickOutside?: boolean;
+  onClose(): void;
+};
+
+const Modal = ({ children, open, disableClickOutside, onClose }: Props) => {
+  const ref = useRef(null);
+
+  useOnClickOutside(ref, () => {
+    if (!disableClickOutside) {
+      onClose();
+    }
+  });
+
   return (
-    <div
-      id="modalWrap"
-      className="absolute bottom-0 left-0 right-0 top-0 h-full w-full"
-    >
+    <div className={`modal${open ? " modal-open" : ""}`}>
       <div
-        id="modalContainer"
-        className="mx-auto flex min-h-full max-w-md flex-col items-center justify-center overflow-auto"
+        className="modal-box w-full rounded-none bg-transparent p-0 shadow-none"
+        ref={ref}
       >
         {children}
       </div>
-      <div
-        id="modalBackground"
-        className="fixed left-0 right-0 top-0 z-[999] flex h-full w-full items-center justify-center bg-[rgba(0,0,0,0.5)]"
-        onClick={closeModal}
-      />
     </div>
   );
 };

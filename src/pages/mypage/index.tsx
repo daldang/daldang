@@ -1,12 +1,12 @@
+import { useState } from "react";
+
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import Swal from "sweetalert2";
-
-import useOpenModal from "~/hooks/useOpenModal";
 
 import Modal from "~/components/Modal";
 
@@ -43,18 +43,26 @@ const MyPage: NextPage = () => {
   const { data: sessionData } = useSession();
 
   // 레벨 안내 modal
-  const {
-    isOpenModal: isOpenLevelModal,
-    clickModal: clickLevel,
-    closeModal: closeLevel,
-  } = useOpenModal();
+  const [modalLevel, setModalLevel] = useState(false);
+  const handleOpenLevel = () => {
+    document.body.style.overflow = "hidden";
+    setModalLevel(true);
+  };
+  const handleCloseLevel = () => {
+    document.body.style.overflow = "unset";
+    setModalLevel(false);
+  };
 
   // 내 정보 수정 modal
-  const {
-    isOpenModal: isOpenProfileUpdate,
-    clickModal: clickProfileUpdate,
-    closeModal: closeProfileUpdate,
-  } = useOpenModal();
+  const [modalProfile, setModalProfile] = useState(false);
+  const handleOpenProfile = () => {
+    document.body.style.overflow = "hidden";
+    setModalProfile(true);
+  };
+  const handleCloseProfile = () => {
+    document.body.style.overflow = "unset";
+    setModalProfile(false);
+  };
 
   const handleLogout = () => {
     void Swal.fire({
@@ -153,7 +161,7 @@ const MyPage: NextPage = () => {
                 <button
                   type="button"
                   className="mr-[18px]"
-                  onClick={clickLevel}
+                  onClick={handleOpenLevel}
                 >
                   <Image
                     src="/level/lv1.svg"
@@ -168,7 +176,7 @@ const MyPage: NextPage = () => {
             <button
               type="button"
               className="im-hyemin-r rounded-lg bg-[#ffaaa8] px-[9px] py-[6px] text-base text-white md:text-[18px]"
-              onClick={clickProfileUpdate}
+              onClick={handleOpenProfile}
             >
               프로필 수정하기 &gt;
             </button>
@@ -299,100 +307,96 @@ const MyPage: NextPage = () => {
           </button>
         </div>
       </div>
-      {isOpenLevelModal && (
-        <Modal closeModal={closeLevel}>
-          <div className="z-[9999] mx-auto grid max-w-md grid-cols-1 grid-rows-5 gap-4">
-            {levelData.map((level) => (
-              <div
-                key={level.key}
-                className={`flex flex-row items-center justify-start rounded-2xl px-[22px] py-[10px] ${
-                  level.activated ? "bg-[#FCDCC0]" : "bg-[#EAEAEA]"
-                }`}
-              >
-                <div className="mr-8 flex h-[85px] w-[85px] items-center justify-center rounded-md bg-[#FFF8F1]">
-                  <Image
-                    src={`/level/lv${level.lv}.svg`}
-                    alt="레벨 이미지"
-                    width={80}
-                    height={65}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <span className="im-hyemin-b text-xl text-[#222222]">
-                    {level.title}
-                  </span>
-                  <span
-                    className={`text-base ${
-                      level.activated ? "text-custom-red" : "text-[#8B8B8B]"
-                    }`}
-                  >
-                    lv.{level.lv}
-                  </span>
-                </div>
+      <Modal open={modalLevel} onClose={handleCloseLevel}>
+        <div className="mx-auto grid w-4/5 grid-cols-1 grid-rows-5 gap-4">
+          {levelData.map((level) => (
+            <div
+              key={level.key}
+              className={`flex flex-row items-center justify-start rounded-2xl px-[22px] py-[10px] ${
+                level.activated ? "bg-[#FCDCC0]" : "bg-[#EAEAEA]"
+              }`}
+            >
+              <div className="mr-8 flex h-[85px] w-[85px] items-center justify-center rounded-md bg-[#FFF8F1]">
+                <Image
+                  src={`/level/lv${level.lv}.svg`}
+                  alt="레벨 이미지"
+                  width={80}
+                  height={65}
+                />
               </div>
-            ))}
-          </div>
-        </Modal>
-      )}
-      {isOpenProfileUpdate && (
-        <Modal closeModal={closeProfileUpdate}>
-          <div className="z-[9999] mx-auto w-full bg-white px-4 py-6 md:p-8">
-            <h2 className="im-hyemin-b mb-5 text-center text-xl text-[#222222]">
-              프로필 수정하기
-            </h2>
-            <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-end rounded-xl bg-custom-yellow">
-              <Image
-                src="/profile/no_pic.png"
-                width={130}
-                height={130}
-                alt="프로필 사진 없음"
-                className="mx-auto"
-              />
+              <div className="flex flex-col">
+                <span className="im-hyemin-b text-xl text-[#222222]">
+                  {level.title}
+                </span>
+                <span
+                  className={`text-base ${
+                    level.activated ? "text-custom-red" : "text-[#8B8B8B]"
+                  }`}
+                >
+                  lv.{level.lv}
+                </span>
+              </div>
             </div>
-            <div className="im-hyemin-r mx-auto mb-8 flex w-full flex-row items-center justify-around">
-              <label
-                htmlFor="file-input"
-                className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
-              >
-                파일 업로드
-              </label>
-              <input type="file" id="file-input" className="hidden" />
-              <button
-                type="button"
-                className="rounded-md bg-custom-red px-[9px] py-[6px] text-white"
-              >
-                기본 캐릭터로 변경
-              </button>
-              <button
-                type="button"
-                className="rounded-md border border-custom-red px-[9px] py-[6px] text-custom-red"
-              >
-                삭제하기
-              </button>
-            </div>
-            <input
-              type="text"
-              placeholder="닉네임을 적어주세요  ✏️"
-              className="im-hyemin-r mb-7 block w-full rounded-md border border-custom-red py-[10px] text-center text-[#222222] focus:outline-none"
+          ))}
+        </div>
+      </Modal>
+      <Modal open={modalProfile} onClose={handleCloseProfile}>
+        <div className="mx-auto w-full bg-white px-4 py-6 md:p-8">
+          <h2 className="im-hyemin-b mb-5 text-center text-xl text-[#222222]">
+            프로필 수정하기
+          </h2>
+          <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-end rounded-xl bg-custom-yellow">
+            <Image
+              src="/profile/no_pic.png"
+              width={130}
+              height={130}
+              alt="프로필 사진 없음"
+              className="mx-auto"
             />
-            <div className="im-hyemin-r mx-auto grid w-fit grid-cols-2 gap-x-10">
-              <button
-                type="button"
-                className="rounded-md border border-custom-red px-[9px] py-[6px] text-custom-red"
-                onClick={closeProfileUpdate}
-              >
-                취소
-              </button>
-              <button
-                type="button"
-                className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
-              >
-                적용하기
-              </button>
-            </div>
           </div>
-        </Modal>
-      )}
+          <div className="im-hyemin-r mx-auto mb-8 flex w-full flex-row items-center justify-around">
+            <label
+              htmlFor="file-input"
+              className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
+            >
+              파일 업로드
+            </label>
+            <input type="file" id="file-input" className="hidden" />
+            <button
+              type="button"
+              className="rounded-md bg-custom-red px-[9px] py-[6px] text-white"
+            >
+              기본 캐릭터로 변경
+            </button>
+            <button
+              type="button"
+              className="rounded-md border border-custom-red px-[9px] py-[6px] text-custom-red"
+            >
+              삭제하기
+            </button>
+          </div>
+          <input
+            type="text"
+            placeholder="닉네임을 적어주세요  ✏️"
+            className="im-hyemin-r mb-7 block w-full rounded-md border border-custom-red py-[10px] text-center text-[#222222] focus:outline-none"
+          />
+          <div className="im-hyemin-r mx-auto grid w-fit grid-cols-2 gap-x-10">
+            <button
+              type="button"
+              className="rounded-md border border-custom-red px-[9px] py-[6px] text-custom-red"
+              onClick={handleCloseProfile}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
+            >
+              적용하기
+            </button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
