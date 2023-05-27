@@ -12,6 +12,7 @@ export const desertLogRouter = createTRPCRouter({
             equals: ctx.session.user.id,
           },
         },
+        orderBy: [{ date: "desc" }],
       });
     }),
 
