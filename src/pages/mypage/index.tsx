@@ -366,8 +366,7 @@ export default function MyPage({
               <span className="text-[#ffaaa8]">행복 칼로리</span> 높은 디저트는?
             </div>
             <div className="grid w-full grid-cols-3 gap-2">
-              {desertLogs &&
-                desertLogs.length > 0 &&
+              {desertLogs && desertLogs.length > 0 ? (
                 desertLogs.map((log) => (
                   <div
                     key={log.id}
@@ -389,11 +388,13 @@ export default function MyPage({
                       {log.score.toString()}kcal
                     </span>
                   </div>
-                ))}
+                ))
+              ) : (
+                <p className="flex w-full flex-row items-center justify-center pb-10 pt-6 font-light text-[#5d5d5d]">
+                  디저트 기록이 없어요 :(
+                </p>
+              )}
             </div>
-            <p className="flex w-full flex-row items-center justify-center pb-10 pt-6 font-light text-[#5d5d5d]">
-              디저트 기록이 없어요 :(
-            </p>
           </div>
         </section>
         <div className="im-hyemin-b mx-auto flex w-full flex-row items-center justify-end px-4">

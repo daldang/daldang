@@ -42,7 +42,7 @@ export default function Home({
         <section className="mb-[22px] flex w-full flex-row items-center justify-between">
           <Link href="/">
             <Image
-              src="logo/logo_main.svg"
+              src="/logo/logo_main.svg"
               alt="메인 로고"
               width={50}
               height={50}
@@ -54,7 +54,7 @@ export default function Home({
             onClick={() => void router.push("/mypage")}
           >
             <Image
-              src="logo/logo_mypage.svg"
+              src="/logo/logo_mypage.svg"
               alt="마이페이지 로고"
               width={50}
               height={50}

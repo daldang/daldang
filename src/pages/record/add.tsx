@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
@@ -7,7 +8,10 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+
+import { format } from "date-fns";
+import Swal from "sweetalert2";
+
 import { ButtonPrimary } from "~/components/Button";
 import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { api } from "~/utils/api";
@@ -24,6 +28,12 @@ export default function RecordAddPage({
 
   const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
 
+  useEffect(() => {
+    if (request) {
+      setRequest({ ...request, score: 50 });
+    }
+  }, []);
+
   const trpc = api.desertLog.createDesertLog.useMutation();
 
   const handleFileChange = (file: File) => {
@@ -32,11 +42,30 @@ export default function RecordAddPage({
   };
 
   const handleSubmit = async () => {
+    if (!request.content) {
+      void Swal.fire({
+        icon: "error",
+        iconColor: "#FFAAA8",
+        title:
+          '<p class="im-hyemin-r text-[#222222] text-base md:text-[22px]">디저트 기록을 입력하세요.</p>',
+        confirmButtonText: "확인",
+        buttonsStyling: false,
+        customClass: {
+          container: "font-normal",
+          confirmButton:
+            "rounded-md bg-white text-custom-purple text-custom-purple border border-custom-purple py-[11px] px-[30px]",
+        },
+      });
+
+      return;
+    }
+
     let image = "";
     if (imageFile) {
       const { url } = await uploadToS3(imageFile);
       image = url;
     }
+
     trpc.mutate(
       {
         ...request,
@@ -59,87 +88,107 @@ export default function RecordAddPage({
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="im-hyemin-b  mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-white p-4">
-        <header className="flex w-full flex-row items-center justify-between">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border-none border-slate-200 px-4 py-[40px] md:border-x">
+        <header className="mb-[22px] flex w-full flex-row items-center justify-between">
           <Link href="/">
-            <div className="bg-amber-200 p-2">로고</div>
+            <Image
+              src="/logo/logo_main.svg"
+              alt="메인 로고"
+              width={50}
+              height={50}
+            />
           </Link>
-          <button type="button" className="bg-amber-200 p-2">
-            닫기
+          <button
+            type="button"
+            className=""
+            onClick={() => void router.push("/mypage")}
+          >
+            <Image
+              src="/logo/logo_mypage.svg"
+              alt="마이페이지 로고"
+              width={50}
+              height={50}
+            />
           </button>
         </header>
-        <div className="flex justify-start gap-10">
-          <Image
-            className="bg-secondary"
-            src={`/characters/${request.desertCharacter}.svg`}
-            alt={"character"}
-            width={150}
-            height={150}
-          />
-          <div className="flex-col">
-            <div className="py-1 text-2xl">{request.desertName}</div>
-            <time className="py-1 text-center">
-              {request.date.toDateString()}
-            </time>
-            <div className="flex py-1">
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.7903 6.09052C12.3242 1.55664 19.6751 1.55664 24.209 6.09052C28.7428 10.6244 28.7428 17.9753 24.209 22.5092L22.6263 24.0744C21.4598 25.2192 19.9463 26.6912 18.0851 28.4905C16.9222 29.6151 15.0771 29.6149 13.9143 28.4903L9.25946 23.9624C8.67445 23.388 8.18476 22.9036 7.7903 22.5092C3.25642 17.9753 3.25642 10.6244 7.7903 6.09052ZM22.7947 7.50473C19.0419 3.75189 12.9573 3.75189 9.20452 7.50473C5.45168 11.2576 5.45168 17.3421 9.20452 21.0949L11.1873 23.0516C12.2792 24.1201 13.6518 25.454 15.3047 27.0527C15.6923 27.4275 16.3072 27.4276 16.695 27.0528L21.2215 22.6508C21.8467 22.0371 22.3712 21.5184 22.7947 21.0949C26.5475 17.3421 26.5475 11.2576 22.7947 7.50473ZM15.9996 10.6647C18.2099 10.6647 20.0016 12.4565 20.0016 14.6668C20.0016 16.8771 18.2099 18.6688 15.9996 18.6688C13.7894 18.6688 11.9976 16.8771 11.9976 14.6668C11.9976 12.4565 13.7894 10.6647 15.9996 10.6647ZM15.9996 12.6647C14.8939 12.6647 13.9975 13.5611 13.9975 14.6668C13.9975 15.7725 14.8939 16.6688 15.9996 16.6688C17.1054 16.6688 18.0016 15.7725 18.0016 14.6668C18.0016 13.5611 17.1054 12.6647 15.9996 12.6647Z"
-                  fill="#FF6562"
-                />
-              </svg>
+        <div className="flex w-full flex-row items-center justify-between">
+          <div className="mr-5 flex h-[130px] w-[130px] items-center justify-center rounded-md bg-[#FFFFDB] md:h-[150px] md:w-[150px]">
+            <Image
+              src={`/characters/${request.desertCharacter}.svg`}
+              alt="character"
+              width={100}
+              height={100}
+            />
+          </div>
+          <div className="flex flex-col text-left">
+            <span className="im-hyemin-b mb-1 text-2xl text-[#222222]">
+              {request.desertName}
+            </span>
+            <span className="text-sm font-normal text-[#5c5c5c]">
+              {format(request.date, "yyyy.MM.dd")}
+            </span>
+            <div className="mt-3 flex flex-row items-center justify-start">
+              <Image
+                src="/icons/icon_location.svg"
+                alt="장소 및 위치"
+                width={23}
+                height={27}
+              />
               <input
-                className="p-1 text-center text-primary"
+                className="ml-2 py-2 text-sm text-custom-red"
                 placeholder="위치를 입력하세요"
                 onChange={(e) =>
                   setRequest({ ...request, location: e.target.value })
                 }
-              ></input>
+              />
             </div>
           </div>
         </div>
         <textarea
-          className="bg-custom-yellow text-center placeholder:text-center"
-          cols={40}
-          rows={4}
-          placeholder="디저트 로그를 입력"
+          className="mt-2 w-full border border-slate-100 p-2 text-center text-sm placeholder:align-middle"
+          rows={5}
+          placeholder="디저트 기록을 작성하세요"
           value={request.content}
           onChange={(e) => setRequest({ ...request, content: e.target.value })}
-        ></textarea>
-        <div className="text text-primary">행복 칼로리</div>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          defaultValue={50}
-          onChange={(e) => {
-            console.log(e.target.valueAsNumber);
-            setRequest({ ...request, score: e.target.valueAsNumber });
-          }}
-          className="range range-primary"
         />
-        <div className="flex w-full justify-between text-3xl">
-          <span>😢</span>
-          <span>😄</span>
-          <span>😋</span>
+        <div className="flex w-full flex-row items-center">
+          <div className="mt-5 flex w-full flex-col items-start justify-start">
+            <p className="mb-3 text-left text-custom-red">행복 칼로리</p>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              defaultValue={50}
+              onChange={(e) => {
+                setRequest({ ...request, score: e.target.valueAsNumber });
+              }}
+              className="range range-primary range-xs"
+            />
+            <div className="flex w-full flex-row items-center justify-between text-xl">
+              <span>😢</span>
+              <span>😄</span>
+              <span>😋</span>
+            </div>
+          </div>
+          <div className="ml-3 h-full pt-6 text-sm text-custom-red">
+            <span>{request.score}kal</span>
+          </div>
         </div>
-        <div className="flex w-full justify-between">
-          <FileInput onChange={handleFileChange}></FileInput>
-          <button className="text-4xl" onClick={openFileDialog}>
-            📷
+        <div className="mt-8 flex w-full justify-between">
+          <FileInput onChange={handleFileChange} />
+          <button
+            className="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-[#F5F5F5]"
+            onClick={openFileDialog}
+          >
+            <span className="mb-2 text-4xl">📷</span>
           </button>
           <ButtonPrimary
             onClick={() => {
               void handleSubmit();
             }}
+            className="im-hyemin-r rounded-md bg-custom-purple px-2 py-1 text-white"
           >
-            저장하기
+            완료!
           </ButtonPrimary>
         </div>
         {objectURL && (
