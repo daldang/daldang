@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import { addMonths, addWeeks, subMonths, subWeeks } from "date-fns";
 
 import { type DesertLogOutput } from "~/utils/type";
+import { useSessionStorageRequestState } from "~/utils/hook";
+
 import MonthlyCells from "./Cells";
 import Days from "./Days";
 import Header from "./Header";
@@ -19,12 +21,15 @@ interface IProps {
 const Calendar = ({ isWeeklyView, switchView, data }: IProps) => {
   const router = useRouter();
 
+  const [request, setRequest] = useSessionStorageRequestState();
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const onDateClick = (day: Date) => {
     setSelectedDate(day);
+    setRequest({ ...request, date: day });
 
     if (new Date()) {
       void router.push("/record");
