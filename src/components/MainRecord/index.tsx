@@ -21,10 +21,10 @@ const MainRecord = ({ data }: { data: DesertLogOutput }) => {
       </div>
       <div className="flex h-full w-full flex-col items-start justify-start">
         <div className="mb-1 flex w-full flex-row items-center justify-between">
-          <span className="block text-base text-[#222222]">
+          <span className="flex items-center justify-center text-base text-[#222222]">
             {data.desertName}
           </span>
-          <span className="im-hyemin-r block text-sm text-[#ffaaa8]">
+          <span className="im-hyemin-r flex items-center justify-center text-sm text-[#ffaaa8]">
             {date[Number(getDay(data.createdAt))]}요일
           </span>
         </div>
