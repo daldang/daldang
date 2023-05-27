@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { ButtonPrimary, ButtonSecondary } from "~/components/Button";
 import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { api } from "~/utils/api";
+import { useSessionStorageRequestState } from "~/utils/hook";
 
 export default function RecordsPage({
   sessionData,
@@ -19,6 +20,7 @@ export default function RecordsPage({
     id: router.query.id as string,
   }).data;
   const deleteDesertLog = api.desertLog.deleteDesertLog.useMutation();
+  const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
 
   if (!record) {
     return <div>record not found on id {router.query.id}</div>;
@@ -39,6 +41,11 @@ export default function RecordsPage({
         },
       }
     );
+  };
+
+  const handleEdit = () => {
+    setRequest({ ...record, image: record.image || "" });
+    void router.push("/record/add");
   };
 
   return (
@@ -120,12 +127,14 @@ export default function RecordsPage({
           />
         </div>
         <div className="mt-20 flex w-full justify-end gap-5 px-4">
-          <ButtonSecondary className="im-hyemin-r rounded-md border border-custom-red bg-white px-2 py-1 text-custom-red">
+          <ButtonSecondary onClick={handleEdit} className="im-hyemin-r rounded-md border border-custom-red bg-white px-2 py-1 text-custom-red">
             수정하기
           </ButtonSecondary>
-          <ButtonPrimary className="im-hyemin-r rounded-md bg-custom-purple px-2 py-1 text-white">
-            저장하기
-          </ButtonPrimary>
+          <Link href={"/"}>
+            <ButtonPrimary className="im-hyemin-r rounded-md bg-custom-purple px-2 py-1 text-white">
+              저장하기
+            </ButtonPrimary>
+          </Link>
         </div>
       </div>
     </>
