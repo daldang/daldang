@@ -16,8 +16,7 @@ const RecordAddPage: NextPage = () => {
 
   const { data: sessionData } = useSession();
 
-  const renderMap = true;
-
+  const [renderMap, setRenderMap] = useState(false);
   const [imageFile, setImageFile] = useState<File | undefined>();
   const [objectURL, setObjectURL] = useState<string | undefined>();
   const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
@@ -65,7 +64,10 @@ const RecordAddPage: NextPage = () => {
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bdc52af2e9ffb6d562133146ebfb57d7&autoload=false" />
+      <Script
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bdc52af2e9ffb6d562133146ebfb57d7&autoload=false"
+        onLoad={() => setRenderMap(true)}
+      />
       <div className="im-hyemin-b  mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-white p-4">
         <header className="flex w-full flex-row items-center justify-between">
           <Link href="/">
@@ -160,7 +162,7 @@ const KakaoMap = () => {
     <>
       <div id="map" className="mx-10 h-[400px] w-[400px] bg-blue-300"></div>;
       <Script id="map-script">{`
-window.kakao.maps.load(() => {
+kakao.maps.load(() => {
   var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
   var options = { //지도를 생성할 때 필요한 기본 옵션
     center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
