@@ -14,7 +14,7 @@ export function useSessionStorageRequestState() {
       content: "",
       desertName: "",
       desertCharacter: "",
-      score: 50,
+      score: 0,
       image: "",
       location: "",
     },
