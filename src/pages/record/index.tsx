@@ -147,7 +147,7 @@ const sizeFromDesertCharacter = (char: DesertCharacter) => {
   }
 };
 
-const convertName = (charName: string) => {
+const convertName = (charName: DesertCharacter | string) => {
   switch (charName) {
     case "croissant":
       return "크루아상";
