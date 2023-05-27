@@ -1,7 +1,11 @@
 import { useState } from "react";
 
-import { type NextPage } from "next";
-import { signIn, signOut, useSession } from "next-auth/react";
+import {
+  type GetServerSidePropsContext,
+  type InferGetServerSidePropsType,
+  type NextPage,
+} from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,17 +13,19 @@ import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 
+import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
+
 import Calendar from "~/components/Calendar";
 import MainRecord from "~/components/MainRecord";
 
-const Home: NextPage = () => {
+export default function Home({
+  sessionData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
   const [isWeeklyView, setIsWeeklyView] = useState(true);
 
   const switchView = () => setIsWeeklyView(!isWeeklyView);
-
-  const { data: sessionData } = useSession();
 
   const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
     { authorId: sessionData?.user.id || "" },
@@ -88,30 +94,11 @@ const Home: NextPage = () => {
           {desertLogs &&
             desertLogs.map((log) => <MainRecord key={log.id} data={log} />)}
         </section>
-        <section className="mt-3 w-full px-4">
-          <AuthShowcase />
-        </section>
       </div>
     </>
   );
-};
+}
 
-export default Home;
-
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <p className="text-center text-2xl text-slate-500">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-      </p>
-      <button
-        className="rounded-full bg-red-100 px-10 py-3 text-slate-500"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return getServerSideSessionPropsOrRedirect(context);
+}

@@ -6,6 +6,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 import { ButtonPrimary } from "~/components/Button";
 import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { useSessionStorageRequestState } from "~/utils/hook";
@@ -27,6 +28,24 @@ export default function RecordPage({}: InferGetServerSidePropsType<
   };
 
   const handleNextStep = () => {
+    if (!request.desertCharacter) {
+      void Swal.fire({
+        icon: "error",
+        iconColor: "#FFAAA8",
+        title:
+          '<p class="im-hyemin-r text-[#222222] text-base md:text-[22px]">디저트 캐릭터를 선택하세요.</p>',
+        confirmButtonText: "확인",
+        buttonsStyling: false,
+        customClass: {
+          container: "font-normal",
+          confirmButton:
+            "rounded-md bg-white text-custom-purple text-custom-purple border border-custom-purple py-[11px] px-[30px]",
+        },
+      });
+
+      return;
+    }
+
     if (request.desertName === "") {
       setRequest({
         ...request,
