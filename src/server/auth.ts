@@ -1,13 +1,13 @@
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
-  type NextAuthOptions,
   type DefaultSession,
+  type NextAuthOptions,
 } from "next-auth";
-import NaverProvider from "next-auth/providers/naver";
-import KakaoProvider from "next-auth/providers/kakao";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import KakaoProvider from "next-auth/providers/kakao";
+import NaverProvider from "next-auth/providers/naver";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 
@@ -71,6 +71,9 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  pages: {
+    signIn: "/signin",
+  },
 };
 
 /**
