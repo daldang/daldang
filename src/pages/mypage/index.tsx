@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 
 import { api } from "~/utils/api";
-import { useSessionStorageRequestState } from "~/utils/hook";
 
 import Modal from "~/components/Modal";
 
@@ -61,8 +60,6 @@ const MyPage: NextPage = () => {
   const [imageFile, setImageFile] = useState<File | undefined>();
   const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
 
-  const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
-
   useEffect(() => {
     if (sessionData?.user?.id === (null || undefined)) {
       void router.push("/signin");
@@ -104,8 +101,6 @@ const MyPage: NextPage = () => {
     // setRequest({ ...request, name });
   };
 
-  const trpc = api.desertLog.createDesertLog.useMutation();
-
   const handleFileChange = (file: File) => {
     setImageFile(file);
     setMyInfo({ ...myInfo, image: URL.createObjectURL(file) });
@@ -129,6 +124,15 @@ const MyPage: NextPage = () => {
       return;
     }
 
+    if (myInfo.name === "") {
+      return Swal.fire({
+        icon: "error",
+        text: "이름은 필수 입력 항목입니다.",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#e0c2ff",
+      });
+    }
+
     let image = "";
     if (imageFile) {
       const { url } = await uploadToS3(imageFile);
@@ -138,7 +142,7 @@ const MyPage: NextPage = () => {
       {
         userid: sessionData.user.id,
         username: myInfo.name,
-        profileImage: image,
+        profileImage: image || myInfo.image,
       },
       {
         onSuccess(data, variables, context) {
@@ -146,8 +150,12 @@ const MyPage: NextPage = () => {
             name: data.name || myInfo.name,
             image: data.image || image,
           });
+
           // close modal
+          handleCloseProfile();
+
           // refresh <<-- state
+          router.reload();
         },
       }
     );
@@ -219,7 +227,9 @@ const MyPage: NextPage = () => {
           </div>
         </section>
         <section className="felx-row mb-8 flex w-full items-center justify-start px-4">
-          {sessionData && sessionData.user ? (
+          {sessionData &&
+          sessionData.user &&
+          sessionData?.user?.image !== "" ? (
             <div className="mr-6 flex h-[118px] w-[118px] items-center justify-center overflow-hidden rounded-xl bg-transparent md:mr-[29px]">
               <Image
                 src={String(sessionData?.user?.image)}
@@ -322,9 +332,9 @@ const MyPage: NextPage = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex flex-row items-center justify-center py-8">
-                데이터가 없습니다
-              </div>
+              <p className="flex w-full flex-row items-center justify-center pb-6 pt-10 font-light text-[#5d5d5d]">
+                디저트 기록이 없어요 :(
+              </p>
             )}
           </div>
           <div className="flex w-full flex-col items-start">
@@ -332,57 +342,34 @@ const MyPage: NextPage = () => {
               <span className="text-[#ffaaa8]">행복 칼로리</span> 높은 디저트는?
             </div>
             <div className="grid w-full grid-cols-3 gap-2">
-              <div className="flex flex-col items-center text-lg">
-                <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
-                  <Image
-                    src="/characters/croissant.svg"
-                    alt="디저트 그림"
-                    width={113}
-                    height={62}
-                    className="rotate-[30deg]"
-                  />
-                </div>
-                <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
-                  디저트 이름
-                </span>
-                <span className="im-hyemin-b text-base text-custom-red md:text-lg">
-                  87kcal
-                </span>
-              </div>
-              <div className="flex flex-col items-center text-lg">
-                <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
-                  <Image
-                    src="/characters/macaroon.svg"
-                    alt="디저트 그림"
-                    width={116}
-                    height={83}
-                  />
-                </div>
-                <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
-                  디저트 이름
-                </span>
-                <span className="im-hyemin-b text-base text-custom-red md:text-lg">
-                  87kcal
-                </span>
-              </div>
-              <div className="flex flex-col items-center text-lg">
-                <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
-                  <Image
-                    src="/characters/muffin.svg"
-                    alt="디저트 그림"
-                    width={111}
-                    height={95}
-                    className="rotate-12"
-                  />
-                </div>
-                <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
-                  디저트 이름
-                </span>
-                <span className="im-hyemin-b text-base text-custom-red md:text-lg">
-                  87kcal
-                </span>
-              </div>
+              {desertLogs &&
+                desertLogs.length > 0 &&
+                desertLogs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="flex flex-col items-center text-lg"
+                  >
+                    <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
+                      <Image
+                        src={`/characters/${log.desertCharacter}.svg`}
+                        alt="디저트 그림"
+                        width={113}
+                        height={62}
+                        className="rotate-[30deg]"
+                      />
+                    </div>
+                    <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
+                      {log.desertName}
+                    </span>
+                    <span className="im-hyemin-b text-base text-custom-red md:text-lg">
+                      {log.score.toString()}kcal
+                    </span>
+                  </div>
+                ))}
             </div>
+            <p className="flex w-full flex-row items-center justify-center pb-10 pt-6 font-light text-[#5d5d5d]">
+              디저트 기록이 없어요 :(
+            </p>
           </div>
         </section>
         <div className="im-hyemin-b mx-auto flex w-full flex-row items-center justify-end px-4">
@@ -504,6 +491,7 @@ const MyPage: NextPage = () => {
             <button
               type="button"
               className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
+              onClick={handleSubmit}
             >
               적용하기
             </button>
