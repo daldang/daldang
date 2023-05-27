@@ -37,6 +37,7 @@ export const desertLogRouter = createTRPCRouter({
         desertName: z.string(),
         score: z.number(),
         image: z.string(),
+        location: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -48,6 +49,7 @@ export const desertLogRouter = createTRPCRouter({
           desertName: input.desertName,
           desertCharacter: input.desertCharacter,
           image: input.image,
+          location: input.location,
         },
       });
     }),

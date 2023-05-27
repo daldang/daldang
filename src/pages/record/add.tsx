@@ -73,7 +73,7 @@ const RecordAddPage: NextPage = () => {
             width={150}
             height={150}
           />
-          <div className="flex-col bg-slate-50">
+          <div className="flex-col">
             <div className="py-1 text-2xl">{request.desertName}</div>
             <time className="py-1 text-center">
               {request.date.toDateString()}
@@ -91,9 +91,13 @@ const RecordAddPage: NextPage = () => {
                   fill="#FF6562"
                 />
               </svg>
-              <div className="p-1 text-center text-primary">
-                서울 특별시 합정동
-              </div>
+              <input
+                className="p-1 text-center text-primary"
+                placeholder="위치를 입력하세요"
+                onChange={(e) =>
+                  setRequest({ ...request, location: e.target.value })
+                }
+              ></input>
             </div>
           </div>
         </div>
