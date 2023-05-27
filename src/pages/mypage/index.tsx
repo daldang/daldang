@@ -124,6 +124,15 @@ const MyPage: NextPage = () => {
       return;
     }
 
+    if (myInfo.name === "") {
+      return Swal.fire({
+        icon: "error",
+        text: "이름은 필수 입력 항목입니다.",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#e0c2ff",
+      });
+    }
+
     let image = "";
     if (imageFile) {
       const { url } = await uploadToS3(imageFile);
