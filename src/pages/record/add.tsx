@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-before-interactive-script-outside-document */
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useS3Upload } from "next-s3-upload";
@@ -7,9 +8,15 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useState } from "react";
+import { Map } from "react-kakao-maps-sdk";
 import { ButtonPrimary } from "~/components/Button";
 import { api } from "~/utils/api";
 import { useSessionStorageRequestState } from "~/utils/hook";
+
+type Location = {
+  latitude: number;
+  longigude: number;
+};
 
 const RecordAddPage: NextPage = () => {
   const router = useRouter();
@@ -17,6 +24,8 @@ const RecordAddPage: NextPage = () => {
   const { data: sessionData } = useSession();
 
   const [renderMap, setRenderMap] = useState(false);
+  const [userLocation, setUserLocation] = useState<Location>();
+
   const [imageFile, setImageFile] = useState<File | undefined>();
   const [objectURL, setObjectURL] = useState<string | undefined>();
   const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
@@ -28,6 +37,11 @@ const RecordAddPage: NextPage = () => {
   const handleClickLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       console.log(position);
+      setRenderMap(!renderMap);
+      setUserLocation({
+        latitude: position.coords.latitude,
+        longigude: position.coords.longitude,
+      });
     });
   };
 
@@ -65,8 +79,8 @@ const RecordAddPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Script
-        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bdc52af2e9ffb6d562133146ebfb57d7&autoload=false"
-        onLoad={() => setRenderMap(true)}
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bdc52af2e9ffb6d562133146ebfb57d7&autoload=false&libraries=services,clusterer"
+        strategy="beforeInteractive"
       />
       <div className="im-hyemin-b  mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-white p-4">
         <header className="flex w-full flex-row items-center justify-between">
@@ -109,7 +123,9 @@ const RecordAddPage: NextPage = () => {
             </button>
           </div>
         </div>
-        {renderMap && <KakaoMap></KakaoMap>}
+        {renderMap && userLocation && (
+          <KakaoMap userLocation={userLocation}></KakaoMap>
+        )}
         <textarea
           className="bg-custom-yellow text-center placeholder:text-center"
           cols={40}
@@ -157,20 +173,17 @@ const RecordAddPage: NextPage = () => {
 
 export default RecordAddPage;
 
-const KakaoMap = () => {
+const KakaoMap = ({ userLocation }: { userLocation: Location }) => {
   return (
-    <>
-      <div id="map" className="mx-10 h-[400px] w-[400px] bg-blue-300"></div>;
-      <Script id="map-script">{`
-kakao.maps.load(() => {
-  var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-  var options = { //지도를 생성할 때 필요한 기본 옵션
-    center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-    level: 3 //지도의 레벨(확대, 축소 정도)
-  };
-  var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-})
-`}</Script>
-    </>
+    <Map
+      center={{ lat: userLocation.latitude, lng: userLocation.longigude }}
+      style={{ width: "100%", height: "360px" }}
+    >
+      {/* <MapMarker
+        position={{ lat: userLocation.latitude, lng: userLocation.longigude }}
+      >
+        <div style={{ color: "#000" }}>Hello World!</div>
+      </MapMarker> */}
+    </Map>
   );
 };
