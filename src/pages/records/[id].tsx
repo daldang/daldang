@@ -1,14 +1,19 @@
-import { useSession } from "next-auth/react";
+import {
+  type GetServerSidePropsContext,
+  type InferGetServerSidePropsType,
+} from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ButtonPrimary, ButtonSecondary } from "~/components/Button";
+import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { api } from "~/utils/api";
 
-const RecordPage = () => {
+export default function RecordsPage({
+  sessionData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const { data: sessionData } = useSession();
   const record = api.desertLog.getDesertLogById.useQuery({
     id: router.query.id as string,
   }).data;
@@ -94,6 +99,8 @@ const RecordPage = () => {
       </div>
     </>
   );
-};
+}
 
-export default RecordPage;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return getServerSideSessionPropsOrRedirect(context);
+}
