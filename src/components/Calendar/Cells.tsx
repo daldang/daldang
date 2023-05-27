@@ -63,7 +63,7 @@ const RenderCells = ({
           }`}
           key={day.toString()}
         >
-          {data[i] && isSameDay(day, data[i].date || new Date()) ? (
+          {data[i] && isSameDay(day, data[i]?.date || new Date()) ? (
             <button
               type="button"
               className="absolute left-1 right-0 top-1/2 mx-auto w-full -translate-y-[50%] text-center"
