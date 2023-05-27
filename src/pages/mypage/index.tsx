@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { signOut } from "next-auth/react";
@@ -45,30 +45,27 @@ const levelData = [
   },
 ];
 
+const NO_PROFILE_IMAGE = "/profile/no_pic.png";
+const DEFAULT_PROFILE_IMAGE = "/profile/profile_pic.png";
+
 export default function MyPage({
   sessionData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
-  const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
-    { authorId: sessionData?.user.id || "" },
-    { enabled: sessionData?.user !== undefined }
-  );
+  const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery({
+    authorId: sessionData.user.id,
+  });
 
   // mutate, query
   const { mutate: updateUser } = api.user.updateUser.useMutation();
 
-  const [myInfo, setMyInfo] = useState({ image: "", name: "" });
+  const [myInfo, setMyInfo] = useState({
+    image: sessionData.user.image || NO_PROFILE_IMAGE,
+    name: sessionData.user.name || "",
+  });
   const [imageFile, setImageFile] = useState<File | undefined>();
   const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
-
-  useEffect(() => {
-    setMyInfo({
-      ...myInfo,
-      image: sessionData?.user?.image || "/profile/no_pic.png",
-      name: sessionData?.user?.name || "no name user",
-    });
-  }, []);
 
   // 레벨 안내 modal
   const [modalLevel, setModalLevel] = useState(false);
@@ -96,6 +93,7 @@ export default function MyPage({
   const handleChangeName = (e: any) => {
     const { value: name } = e.target;
     setMyInfo({ ...myInfo, name });
+    // TODO: integrate api
     // setRequest({ ...request, name });
   };
 
@@ -107,10 +105,10 @@ export default function MyPage({
   const handleChangeImage = (type: string) => {
     switch (type) {
       case "default":
-        setMyInfo({ ...myInfo, image: "/profile/profile_pic.png" });
+        setMyInfo({ ...myInfo, image: DEFAULT_PROFILE_IMAGE });
         break;
       case "delete":
-        setMyInfo({ ...myInfo, image: "" });
+        setMyInfo({ ...myInfo, image: NO_PROFILE_IMAGE });
         break;
       default:
         break;
@@ -198,6 +196,7 @@ export default function MyPage({
       },
     }).then((result) => {
       if (result.isConfirmed) {
+        // TODO: Add signout api mutation
         console.log("탈퇴!");
       }
     });
@@ -225,9 +224,7 @@ export default function MyPage({
           </div>
         </section>
         <section className="felx-row mb-8 flex w-full items-center justify-start px-4">
-          {sessionData &&
-          sessionData.user &&
-          sessionData?.user?.image !== "" ? (
+          {myInfo.image !== NO_PROFILE_IMAGE ? (
             <div className="mr-6 flex h-[118px] w-[118px] items-center justify-center overflow-hidden rounded-xl bg-transparent md:mr-[29px]">
               <Image
                 src={myInfo.image}
@@ -239,7 +236,7 @@ export default function MyPage({
           ) : (
             <div className="mr-6 flex h-[118px] w-[118px] flex-col items-center justify-end rounded-xl bg-custom-yellow md:mr-[29px]">
               <Image
-                src="/profile/no_pic.png"
+                src={myInfo.image}
                 width={100}
                 height={100}
                 alt="프로필 사진 없음"
@@ -292,6 +289,7 @@ export default function MyPage({
                       🍯
                     </span>
                   </div>
+                  {/* TODO: add all  */}
                   <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                     지금까지 총{" "}
                     <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
@@ -306,6 +304,7 @@ export default function MyPage({
                       📑
                     </span>
                   </div>
+                  {/* TODO: add all  */}
                   <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                     지금까지 총{" "}
                     <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
@@ -320,6 +319,7 @@ export default function MyPage({
                       🍴
                     </span>
                   </div>
+                  {/* TODO: add all  */}
                   <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                     지금까지{" "}
                     <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
@@ -425,13 +425,13 @@ export default function MyPage({
           <h2 className="im-hyemin-b mb-5 text-center text-xl text-[#222222]">
             프로필 수정하기
           </h2>
-          {myInfo.image ? (
+          {myInfo.image !== NO_PROFILE_IMAGE ? (
             <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-center overflow-hidden rounded-xl bg-custom-yellow">
               <Image
-                src={String(myInfo.image)}
+                src={myInfo.image}
                 width={150}
                 height={150}
-                alt="프로필 사진 없음"
+                alt="프로필 사진 있음"
                 className="mx-auto"
                 style={{ objectFit: "cover" }}
               />
@@ -439,7 +439,7 @@ export default function MyPage({
           ) : (
             <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-end rounded-xl bg-custom-yellow">
               <Image
-                src="/profile/no_pic.png"
+                src={myInfo.image}
                 width={130}
                 height={130}
                 alt="프로필 사진 없음"
