@@ -1,5 +1,7 @@
-import { type NextPage } from "next";
-import { useSession } from "next-auth/react";
+import {
+  type GetServerSidePropsContext,
+  type InferGetServerSidePropsType,
+} from "next";
 import { useS3Upload } from "next-s3-upload";
 import Head from "next/head";
 import Image from "next/image";
@@ -7,13 +9,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { ButtonPrimary } from "~/components/Button";
+import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { api } from "~/utils/api";
 import { useSessionStorageRequestState } from "~/utils/hook";
 
-const RecordAddPage: NextPage = () => {
+export default function RecordAddPage({
+  sessionData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-
-  const { data: sessionData } = useSession();
 
   const [imageFile, setImageFile] = useState<File | undefined>();
   const [objectURL, setObjectURL] = useState<string | undefined>();
@@ -145,6 +148,8 @@ const RecordAddPage: NextPage = () => {
       </div>
     </>
   );
-};
+}
 
-export default RecordAddPage;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return getServerSideSessionPropsOrRedirect(context);
+}

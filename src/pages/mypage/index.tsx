@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { useEffect, useState } from "react";
 
-import { type NextPage } from "next";
-import { signOut, useSession } from "next-auth/react";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { signOut } from "next-auth/react";
 import { useS3Upload } from "next-s3-upload";
 import Head from "next/head";
 import Image from "next/image";
@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { api } from "~/utils/api";
 
 import Modal from "~/components/Modal";
+import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 
 const levelData = [
   {
@@ -44,10 +45,11 @@ const levelData = [
   },
 ];
 
-const MyPage: NextPage = () => {
+export default function MyPage({
+  sessionData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
-  const { data: sessionData } = useSession();
   const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
     { authorId: sessionData?.user.id || "" },
     { enabled: sessionData?.user !== undefined }
@@ -61,14 +63,10 @@ const MyPage: NextPage = () => {
   const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
 
   useEffect(() => {
-    if (sessionData?.user?.id === (null || undefined)) {
-      void router.push("/signin");
-    }
-
     setMyInfo({
       ...myInfo,
-      image: String(sessionData?.user?.image),
-      name: String(sessionData?.user?.name),
+      image: sessionData?.user?.image || "/profile/no_pic.png",
+      name: sessionData?.user?.name || "no name user",
     });
   }, []);
 
@@ -232,7 +230,7 @@ const MyPage: NextPage = () => {
           sessionData?.user?.image !== "" ? (
             <div className="mr-6 flex h-[118px] w-[118px] items-center justify-center overflow-hidden rounded-xl bg-transparent md:mr-[29px]">
               <Image
-                src={String(sessionData?.user?.image)}
+                src={myInfo.image}
                 alt="prifile image"
                 width={118}
                 height={118}
@@ -500,6 +498,8 @@ const MyPage: NextPage = () => {
       </Modal>
     </>
   );
-};
+}
 
-export default MyPage;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return getServerSideSessionPropsOrRedirect(context);
+}
