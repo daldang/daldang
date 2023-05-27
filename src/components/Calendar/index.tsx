@@ -2,17 +2,18 @@ import { useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { addMonths, subMonths, addWeeks, subWeeks } from "date-fns";
+import { addMonths, addWeeks, subMonths, subWeeks } from "date-fns";
 
-import Header from "./Header";
-import Days from "./Days";
+import { type DesertLogOutput } from "~/utils/type";
 import MonthlyCells from "./Cells";
+import Days from "./Days";
+import Header from "./Header";
 import WeeklyCalendar from "./WeeklyCalendar";
 
 interface IProps {
   isWeeklyView: boolean;
   switchView(): void;
-  data?: any[];
+  data?: DesertLogOutput[];
 }
 
 const Calendar = ({ isWeeklyView, switchView, data }: IProps) => {
