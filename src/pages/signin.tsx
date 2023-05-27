@@ -50,7 +50,6 @@ export default function SignIn({
 
 const AuthButton = ({ provider }: { provider: ClientSafeProvider }) => {
   const imageFromProvider = (p: ClientSafeProvider) => {
-    console.log(p);
     if (p.id == "naver") {
       return "/images/signin/naver/white.png";
     }
