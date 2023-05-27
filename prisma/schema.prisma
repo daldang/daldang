@@ -29,6 +29,7 @@ model DesertLog {
     content         String   @db.Text
     image           String?  @db.Text
     score           Int      @default(0)
+    location        String   @db.Text
     authorId        String
     author          User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 

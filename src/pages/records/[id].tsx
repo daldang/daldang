@@ -82,7 +82,7 @@ const RecordPage = () => {
             </div>
           </div>
           <div className="flex justify-between p-5">
-            <div className="text-[#9C9C67]"> 서울특별시 합정동</div>
+            <div className="text-[#9C9C67]">{record.location}</div>
             <div>{record.date.toDateString().replaceAll("/", ".")}</div>
           </div>
           <div className="p-5">{record.content}</div>
