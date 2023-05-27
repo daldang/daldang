@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 import { addMonths, addWeeks, subMonths, subWeeks } from "date-fns";
 
-import { type DesertLogOutput } from "~/utils/type";
 import { useSessionStorageRequestState } from "~/utils/hook";
+import { type DesertLogOutput } from "~/utils/type";
 
 import MonthlyCells from "./Cells";
 import Days from "./Days";
@@ -15,7 +15,7 @@ import WeeklyCalendar from "./WeeklyCalendar";
 interface IProps {
   isWeeklyView: boolean;
   switchView(): void;
-  data?: DesertLogOutput[];
+  data: DesertLogOutput[];
 }
 
 const Calendar = ({ isWeeklyView, switchView, data }: IProps) => {

@@ -3,22 +3,23 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 import {
-  format,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  isSameMonth,
-  isSameDay,
   addDays,
+  endOfMonth,
+  endOfWeek,
+  format,
   isAfter,
+  isSameDay,
+  isSameMonth,
+  startOfMonth,
+  startOfWeek,
 } from "date-fns";
+import { DesertLogOutput } from "~/utils/type";
 
 interface IProps {
   currentMonth: Date;
   selectedDate?: Date;
   onDateClick: any;
-  data?: any[];
+  data: DesertLogOutput[];
 }
 
 const RenderCells = ({
@@ -62,7 +63,7 @@ const RenderCells = ({
           }`}
           key={day.toString()}
         >
-          {data && isSameDay(day, data[i]?.createdAt) ? (
+          {data[i] && isSameDay(day, data[i]?.date || new Date()) ? (
             <button
               type="button"
               className="absolute left-1 right-0 top-1/2 mx-auto w-full -translate-y-[50%] text-center"

@@ -3,9 +3,7 @@ import { useState } from "react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
-  type NextPage,
 } from "next";
-import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,10 +25,11 @@ export default function Home({
 
   const switchView = () => setIsWeeklyView(!isWeeklyView);
 
-  const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
+  let { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
     { authorId: sessionData?.user.id || "" },
     { enabled: sessionData?.user !== undefined }
   );
+  desertLogs = desertLogs ? desertLogs : [];
 
   return (
     <>
@@ -43,7 +42,7 @@ export default function Home({
         <section className="mb-[22px] flex w-full flex-row items-center justify-between">
           <Link href="/">
             <Image
-              src="logo/logo_main.svg"
+              src="/logo/logo_main.svg"
               alt="메인 로고"
               width={50}
               height={50}
@@ -55,7 +54,7 @@ export default function Home({
             onClick={() => void router.push("/mypage")}
           >
             <Image
-              src="logo/logo_mypage.svg"
+              src="/logo/logo_mypage.svg"
               alt="마이페이지 로고"
               width={50}
               height={50}
