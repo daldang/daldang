@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
 
 export const env = createEnv({
   /**
@@ -27,6 +27,8 @@ export const env = createEnv({
     KAKAO_CLIENT_SECRET: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
+    NAVER_CLOUD_ACCESS_KEY_ID: z.string(),
+    NAVER_CLOUD_SECRET_KEY: z.string(),
   },
 
   /**
@@ -53,5 +55,7 @@ export const env = createEnv({
     KAKAO_CLIENT_SECRET: process.env.KAKAO_CLIENT_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    NAVER_CLOUD_ACCESS_KEY_ID: process.env.NAVER_CLOUD_ACCESS_KEY_ID,
+    NAVER_CLOUD_SECRET_KEY: process.env.NAVER_CLOUD_SECRET_KEY,
   },
 });

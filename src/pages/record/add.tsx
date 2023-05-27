@@ -1,24 +1,44 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useS3Upload } from "next-s3-upload";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { ButtonPrimary } from "~/components/Button";
 import { api } from "~/utils/api";
 import { useSessionStorageRequestState } from "~/utils/hook";
 
 const RecordAddPage: NextPage = () => {
   const router = useRouter();
+
   const { data: sessionData } = useSession();
+
+  const [imageFile, setImageFile] = useState<File | undefined>();
+  const [objectURL, setObjectURL] = useState<string | undefined>();
+  const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+
   const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
+
   const trpc = api.desertLog.createDesertLog.useMutation();
 
-  const handleSubmit = () => {
+  const handleFileChange = (file: File) => {
+    setImageFile(file);
+    setObjectURL(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = async () => {
+    let image = "";
+    if (imageFile) {
+      const { url } = await uploadToS3(imageFile);
+      image = url;
+    }
     trpc.mutate(
       {
         ...request,
         authorId: sessionData?.user.id || "",
+        image: image,
       },
       {
         onSuccess(data, variables, context) {
@@ -27,7 +47,6 @@ const RecordAddPage: NextPage = () => {
         },
       }
     );
-    removeItem();
   };
 
   return (
@@ -50,7 +69,7 @@ const RecordAddPage: NextPage = () => {
           <Image
             className="bg-secondary"
             src={`/characters/${request.desertCharacter}.svg`}
-            alt={request.desertCharacter}
+            alt={"character"}
             width={150}
             height={150}
           />
@@ -83,9 +102,6 @@ const RecordAddPage: NextPage = () => {
           cols={40}
           rows={4}
           placeholder="디저트 로그를 입력"
-          defaultValue={`가나다라마바사 아자차카타파하 왕 맛있다 
-          맛평가를 해주세요 맛평가를 해주세요! 맛평가를 해주세요 !?
-          바닐라 마카롱은 근본이지 근본 이즈 베스트 짱 !`}
           value={request.content}
           onChange={(e) => setRequest({ ...request, content: e.target.value })}
         ></textarea>
@@ -94,7 +110,6 @@ const RecordAddPage: NextPage = () => {
           type="range"
           min={0}
           max={100}
-          defaultValue={50}
           value={request.score}
           onChange={(e) =>
             setRequest({ ...request, score: e.target.valueAsNumber })
@@ -107,9 +122,21 @@ const RecordAddPage: NextPage = () => {
           <span>😋</span>
         </div>
         <div className="flex w-full justify-between">
-          <button className="pl-5 text-4xl">📷</button>
-          <ButtonPrimary onClick={() => handleSubmit()}>저장하기</ButtonPrimary>
+          <FileInput onChange={handleFileChange}></FileInput>
+          <button className="text-4xl" onClick={openFileDialog}>
+            📷
+          </button>
+          <ButtonPrimary
+            onClick={() => {
+              void handleSubmit();
+            }}
+          >
+            저장하기
+          </ButtonPrimary>
         </div>
+        {objectURL && (
+          <Image src={objectURL} alt="image" width={500} height={500}></Image>
+        )}
       </div>
     </>
   );
