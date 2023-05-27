@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 import {
   format,
@@ -15,11 +16,19 @@ import {
 
 interface IProps {
   currentMonth: Date;
-  selectedDate: Date;
+  selectedDate?: Date;
   onDateClick: any;
+  data?: any[];
 }
 
-const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
+const RenderCells = ({
+  currentMonth,
+  selectedDate,
+  onDateClick,
+  data,
+}: IProps) => {
+  const router = useRouter();
+
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -35,9 +44,8 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
       formattedDate = format(day, "d");
       const cloneDay = day;
       days.push(
-        <button
-          type="button"
-          className={`relative block px-1 py-4 text-sm text-[#7d7d7d] ${
+        <div
+          className={`relative block px-1 py-4 text-center text-sm text-[#7d7d7d] ${
             !isSameMonth(day, monthStart)
               ? "disabled text-[#C6C6C6] "
               : // : isSameDay(day, selectedDate)
@@ -53,20 +61,25 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
               : "text-[#7d7d7d]"
           }`}
           key={day.toString()}
-          onClick={() => onDateClick(cloneDay)}
-          disabled={isAfter(day, new Date())}
         >
-          {isSameDay(day, new Date()) ||
-          isSameDay(day, new Date(2023, 4, 1)) ? (
-            <Image
-              src="/markers/marker.svg"
-              alt="marker"
-              width={40}
-              height={40}
-              className="absolute left-0 right-0 top-1/2 mx-auto -translate-y-[50%]"
-            />
+          {data && isSameDay(day, data[i]?.createdAt) ? (
+            <button
+              type="button"
+              className="absolute left-1 right-0 top-1/2 mx-auto w-full -translate-y-[50%] text-center"
+              onClick={() => void router.push(`/records/${data[i]?.id}`)}
+            >
+              <Image
+                src={`/characters/${data[i]?.desertCharacter}.svg`}
+                alt="marker"
+                width={40}
+                height={40}
+              />
+            </button>
           ) : (
-            <span
+            <button
+              type="button"
+              onClick={() => onDateClick(cloneDay)}
+              disabled={isAfter(day, new Date())}
               className={
                 format(currentMonth, "M") !== format(day, "M")
                   ? "text not-valid"
@@ -74,9 +87,9 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }: IProps) => {
               }
             >
               {formattedDate}
-            </span>
+            </button>
           )}
-        </button>
+        </div>
       );
       day = addDays(day, 1);
     }

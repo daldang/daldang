@@ -1,12 +1,18 @@
-import { useState } from "react";
+/* eslint-disable */
+import { useEffect, useState } from "react";
 
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
+import { useS3Upload } from "next-s3-upload";
 
 import Swal from "sweetalert2";
+
+import { api } from "~/utils/api";
+import { useSessionStorageRequestState } from "~/utils/hook";
 
 import Modal from "~/components/Modal";
 
@@ -40,7 +46,31 @@ const levelData = [
 ];
 
 const MyPage: NextPage = () => {
+  const router = useRouter();
+
   const { data: sessionData } = useSession();
+  const { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
+    { authorId: sessionData?.user.id || "" },
+    { enabled: sessionData?.user !== undefined }
+  );
+
+  const [myInfo, setMyInfo] = useState({ image: "", name: "" });
+  const [imageFile, setImageFile] = useState<File | undefined>();
+  const { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+
+  const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
+
+  useEffect(() => {
+    if (sessionData?.user?.id === (null || undefined)) {
+      void router.push("/signin");
+    }
+
+    setMyInfo({
+      ...myInfo,
+      image: String(sessionData?.user?.image),
+      name: String(sessionData?.user?.name),
+    });
+  }, []);
 
   // 레벨 안내 modal
   const [modalLevel, setModalLevel] = useState(false);
@@ -62,6 +92,54 @@ const MyPage: NextPage = () => {
   const handleCloseProfile = () => {
     document.body.style.overflow = "unset";
     setModalProfile(false);
+  };
+
+  // 프로필 수정하기
+  const handleChangeName = (e: any) => {
+    const { value: name } = e.target;
+    setMyInfo({ ...myInfo, name });
+    // setRequest({ ...request, name });
+  };
+
+  const trpc = api.desertLog.createDesertLog.useMutation();
+
+  const handleFileChange = (file: File) => {
+    setImageFile(file);
+    setMyInfo({ ...myInfo, image: URL.createObjectURL(file) });
+  };
+
+  const handleChangeImage = (type: string) => {
+    switch (type) {
+      case "default":
+        setMyInfo({ ...myInfo, image: "/profile/profile_pic.png" });
+        break;
+      case "delete":
+        setMyInfo({ ...myInfo, image: "" });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSubmit = async () => {
+    let image = "";
+    if (imageFile) {
+      const { url } = await uploadToS3(imageFile);
+      image = url;
+    }
+    trpc.mutate(
+      {
+        ...request,
+        authorId: sessionData?.user.id || "",
+        image: image,
+      },
+      {
+        onSuccess(data, variables, context) {
+          removeItem();
+          void router.push("/mypage");
+        },
+      }
+    );
   };
 
   const handleLogout = () => {
@@ -131,9 +209,9 @@ const MyPage: NextPage = () => {
         </section>
         <section className="felx-row mb-8 flex w-full items-center justify-start px-4">
           {sessionData && sessionData.user ? (
-            <div className="mr-6 flex h-[118px] w-[118px] items-center justify-center rounded-xl bg-transparent md:mr-[29px]">
+            <div className="mr-6 flex h-[118px] w-[118px] items-center justify-center overflow-hidden rounded-xl bg-transparent md:mr-[29px]">
               <Image
-                src={String(sessionData.user?.image)}
+                src={String(sessionData?.user?.image)}
                 alt="prifile image"
                 width={118}
                 height={118}
@@ -187,50 +265,56 @@ const MyPage: NextPage = () => {
             <div className="im-hyemin-b mb-2 text-lg text-white md:text-[22px]">
               <span className="text-[#ffaaa8]">나의 기록</span> 모아보기
             </div>
-            <div className="grid w-full grid-cols-1 grid-rows-3 gap-y-4">
-              <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
-                <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
-                  <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
-                    🍯
-                  </span>
+            {desertLogs && desertLogs.length > 0 ? (
+              <div className="grid w-full grid-cols-1 grid-rows-3 gap-y-4">
+                <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
+                  <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
+                    <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
+                      🍯
+                    </span>
+                  </div>
+                  <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
+                    지금까지 총{" "}
+                    <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
+                      50kcal
+                    </span>{" "}
+                    의 행복 칼로리를 저장했어요
+                  </p>
                 </div>
-                <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
-                  지금까지 총{" "}
-                  <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
-                    50kcal
-                  </span>{" "}
-                  행복 칼로리를 저장했어요.
-                </p>
-              </div>
-              <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
-                <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
-                  <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
-                    📑
-                  </span>
+                <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
+                  <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
+                    <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
+                      📑
+                    </span>
+                  </div>
+                  <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
+                    지금까지 총{" "}
+                    <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
+                      {desertLogs.length}개
+                    </span>{" "}
+                    의 디저트를 기록했어요
+                  </p>
                 </div>
-                <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
-                  지금까지 총{" "}
-                  <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
-                    12가지
-                  </span>{" "}
-                  디저트를 기록했어요.
-                </p>
-              </div>
-              <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
-                <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
-                  <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
-                    🍴
-                  </span>
+                <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
+                  <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
+                    <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
+                      🍴
+                    </span>
+                  </div>
+                  <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
+                    지금까지{" "}
+                    <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
+                      마카롱
+                    </span>{" "}
+                    에 대한 기록이 가장 많아요
+                  </p>
                 </div>
-                <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
-                  지금까지{" "}
-                  <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
-                    마카롱
-                  </span>{" "}
-                  을 가장 많이 기록했어요.
-                </p>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-row items-center justify-center py-8">
+                데이터가 없습니다
+              </div>
+            )}
           </div>
           <div className="flex w-full flex-col items-start">
             <div className="im-hyemin-b pb-5 text-lg text-white md:text-[22px]">
@@ -345,31 +429,47 @@ const MyPage: NextPage = () => {
           <h2 className="im-hyemin-b mb-5 text-center text-xl text-[#222222]">
             프로필 수정하기
           </h2>
-          <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-end rounded-xl bg-custom-yellow">
-            <Image
-              src="/profile/no_pic.png"
-              width={130}
-              height={130}
-              alt="프로필 사진 없음"
-              className="mx-auto"
-            />
-          </div>
+          {myInfo.image ? (
+            <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-center overflow-hidden rounded-xl bg-custom-yellow">
+              <Image
+                src={String(myInfo.image)}
+                width={150}
+                height={150}
+                alt="프로필 사진 없음"
+                className="mx-auto"
+                style={{ objectFit: "cover" }}
+              />
+            </div>
+          ) : (
+            <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-end rounded-xl bg-custom-yellow">
+              <Image
+                src="/profile/no_pic.png"
+                width={130}
+                height={130}
+                alt="프로필 사진 없음"
+                className="mx-auto"
+              />
+            </div>
+          )}
           <div className="im-hyemin-r mx-auto mb-8 flex w-full flex-row items-center justify-around">
-            <label
-              htmlFor="file-input"
+            <button
+              type="button"
+              onClick={openFileDialog}
               className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
             >
               파일 업로드
-            </label>
-            <input type="file" id="file-input" className="hidden" />
+            </button>
+            <FileInput className="hidden" onChange={handleFileChange} />
             <button
               type="button"
+              onClick={(e) => handleChangeImage("default")}
               className="rounded-md bg-custom-red px-[9px] py-[6px] text-white"
             >
               기본 캐릭터로 변경
             </button>
             <button
               type="button"
+              onClick={(e) => handleChangeImage("delete")}
               className="rounded-md border border-custom-red px-[9px] py-[6px] text-custom-red"
             >
               삭제하기
@@ -378,6 +478,8 @@ const MyPage: NextPage = () => {
           <input
             type="text"
             placeholder="닉네임을 적어주세요  ✏️"
+            value={myInfo.name}
+            onChange={handleChangeName}
             className="im-hyemin-r mb-7 block w-full rounded-md border border-custom-red py-[10px] text-center text-[#222222] focus:outline-none"
           />
           <div className="im-hyemin-r mx-auto grid w-fit grid-cols-2 gap-x-10">

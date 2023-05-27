@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 import {
   format,
@@ -17,6 +18,7 @@ interface IProps {
   onDateClick: any;
   prevWeek(): void;
   nextWeek(): void;
+  data?: any[];
 }
 
 const WeeklyCalendar = ({
@@ -26,6 +28,7 @@ const WeeklyCalendar = ({
   onDateClick,
   prevWeek,
   nextWeek,
+  data,
 }: IProps) => {
   return (
     <>
@@ -38,6 +41,7 @@ const WeeklyCalendar = ({
         currentWeek={currentWeek}
         selectedDate={selectedDate}
         onDateClick={onDateClick}
+        data={data}
       />
     </>
   );
@@ -102,11 +106,19 @@ const WeeklyHeader = ({ switchView, prevWeek, nextWeek }: IWHProps) => {
 
 interface IWCProps {
   currentWeek: Date;
-  selectedDate: Date;
+  selectedDate?: Date;
   onDateClick: any;
+  data?: any[];
 }
 
-const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
+const WeeklyCells = ({
+  currentWeek,
+  selectedDate,
+  onDateClick,
+  data,
+}: IWCProps) => {
+  const router = useRouter();
+
   const startDate = startOfWeek(currentWeek);
 
   let days = [];
@@ -117,9 +129,8 @@ const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
     formattedDate = format(day, "d");
     const cloneDay = day;
     days.push(
-      <button
-        type="button"
-        className={`im-hyemin-r relative block px-1 py-4 text-sm text-[#7d7d7d] ${
+      <div
+        className={`im-hyemin-r relative block px-1 py-4 text-center text-sm text-[#7d7d7d] ${
           !isSameWeek(day, currentWeek)
             ? "disabled text-slate-300 "
             : // : isSameDay(day, selectedDate)
@@ -135,19 +146,27 @@ const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
             : "text-[#7d7d7d]"
         }`}
         key={day.toString()}
-        onClick={() => onDateClick(cloneDay)}
-        disabled={isAfter(day, new Date())}
       >
-        {isSameDay(day, new Date()) ? (
-          <Image
-            src="/markers/marker.svg"
-            alt="marker"
-            width={40}
-            height={40}
+        {data && isSameDay(day, data ? data[i]?.createdAt : new Date()) ? (
+          <button
+            type="button"
             className="absolute left-0 right-0 top-1/2 mx-auto -translate-y-[50%]"
-          />
+            onClick={() =>
+              void router.push(`/records/${data ? data[i]?.id : ""}`)
+            }
+          >
+            <Image
+              src={`/characters/${data[i]?.desertCharacter}.svg`}
+              alt="marker"
+              width={40}
+              height={40}
+            />
+          </button>
         ) : (
-          <span
+          <button
+            type="button"
+            onClick={() => onDateClick(cloneDay)}
+            disabled={isAfter(day, new Date())}
             className={
               format(currentWeek, "M") !== format(day, "M")
                 ? "text not-valid"
@@ -155,9 +174,9 @@ const WeeklyCells = ({ currentWeek, selectedDate, onDateClick }: IWCProps) => {
             }
           >
             {formattedDate}
-          </span>
+          </button>
         )}
-      </button>
+      </div>
     );
     day = addDays(day, 1);
   }
