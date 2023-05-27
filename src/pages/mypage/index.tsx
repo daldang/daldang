@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 
+import Swal from "sweetalert2";
+
 import useOpenModal from "~/hooks/useOpenModal";
 
 import Modal from "~/components/Modal";
@@ -50,6 +52,50 @@ const MyPage: NextPage = () => {
     closeModal: closeProfileUpdate,
   } = useOpenModal();
 
+  const handleLogout = () => {
+    void Swal.fire({
+      title:
+        '<span class="im-hyemin-r text-[#222222] text-base md:text-[22px]">로그아웃을 진행할까요?</span>',
+      confirmButtonText: "네",
+      showCancelButton: true,
+      cancelButtonText: "아니오",
+      buttonsStyling: false,
+      customClass: {
+        container: "font-normal",
+        confirmButton:
+          "rounded-md bg-white text-custom-red text-custom-red border border-custom-red py-[11px] px-[30px] mr-8",
+        cancelButton:
+          "rounded-md bg-custom-purple text-white py-[11px] px-[30px]",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        void signOut();
+      }
+    });
+  };
+
+  const handleDeleteAccount = () => {
+    void Swal.fire({
+      title:
+        '<p class="im-hyemin-r text-[#222222] text-base md:text-[22px]">탈퇴 시 모든 계정 정보가 삭제됩니다.<br />탈퇴를 진행할까요?</p>',
+      confirmButtonText: "네",
+      showCancelButton: true,
+      cancelButtonText: "아니오",
+      buttonsStyling: false,
+      customClass: {
+        container: "font-normal",
+        confirmButton:
+          "rounded-md bg-white text-custom-red text-custom-red border border-custom-red py-[11px] px-[30px] mr-8",
+        cancelButton:
+          "rounded-md bg-custom-purple text-white py-[11px] px-[30px]",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("탈퇴!");
+      }
+    });
+  };
+
   return (
     <>
       <Head>
@@ -82,10 +128,10 @@ const MyPage: NextPage = () => {
           </div>
           <div className="flex flex-col items-start justify-between">
             <div className="mb-[26px] flex flex-col items-start">
-              <span className="mb-[8px] text-[22px] leading-none text-[#222222]">
+              <span className="mb-[8px] text-xl leading-none text-[#222222] md:text-[22px]">
                 닉네임을 정해주세요
               </span>
-              <span className="im-hyemin-r flex flex-row items-center text-base text-[#5c5c5c]">
+              <span className="im-hyemin-r flex flex-row items-center text-sm text-[#5c5c5c] md:text-base">
                 <button
                   type="button"
                   className="mr-[18px]"
@@ -103,7 +149,7 @@ const MyPage: NextPage = () => {
             </div>
             <button
               type="button"
-              className="im-hyemin-r rounded-lg bg-[#ffaaa8] px-[9px] py-[6px] text-[18px] text-white"
+              className="im-hyemin-r rounded-lg bg-[#ffaaa8] px-[9px] py-[6px] text-base text-white md:text-[18px]"
               onClick={clickProfileUpdate}
             >
               프로필 수정하기 &gt;
@@ -112,56 +158,56 @@ const MyPage: NextPage = () => {
         </section>
         <section className="mx-auto mb-[40px] flex w-full max-w-lg flex-col items-start justify-between rounded-t-[50px] bg-[#FCDCC0] px-4 pb-[40px] pt-[40px]">
           <div className="mb-[30px] flex w-full flex-col items-start pb-5">
-            <div className="im-hyemin-b mb-5 text-[22px] text-white">
+            <div className="im-hyemin-b mb-2 text-lg text-white md:text-[22px]">
               <span className="text-[#ffaaa8]">나의 기록</span> 모아보기
             </div>
             <div className="grid w-full grid-cols-1 grid-rows-3 gap-y-4">
-              <div className="flex w-full flex-row items-center justify-start gap-x-6 border-b border-b-custom-red py-4">
+              <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
                 <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
                   <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
                     🍯
                   </span>
                 </div>
-                <p className="break-keep text-base font-normal text-[#595959]">
+                <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                   지금까지 총{" "}
-                  <span className="im-hyemin-b mx-0.5 text-lg text-custom-red">
+                  <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
                     50kcal
                   </span>{" "}
-                  행복 칼로리 저장했어요.
+                  행복 칼로리를 저장했어요.
                 </p>
               </div>
-              <div className="flex w-full flex-row items-center justify-start gap-x-6 border-b border-b-custom-red py-4">
+              <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
                 <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
                   <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
                     📑
                   </span>
                 </div>
-                <p className="break-keep text-base font-normal text-[#595959]">
+                <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                   지금까지 총{" "}
-                  <span className="im-hyemin-b mx-0.5 text-lg text-custom-red">
+                  <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
                     12가지
                   </span>{" "}
-                  기록했어요.
+                  디저트를 기록했어요.
                 </p>
               </div>
-              <div className="flex w-full flex-row items-center justify-start gap-x-6 border-b border-b-custom-red py-4">
+              <div className="flex w-full flex-row items-center justify-start gap-x-4 border-b border-b-custom-red py-4 md:gap-x-6">
                 <div className="h-[50px] w-[50px] rounded-md bg-[#F3CCA9]">
                   <span className="flex h-[50px] w-[50px] items-center justify-center align-middle text-4xl">
                     🍴
                   </span>
                 </div>
-                <p className="break-keep text-base font-normal text-[#595959]">
+                <p className="break-keep text-sm font-normal text-[#595959] md:text-base">
                   지금까지{" "}
-                  <span className="im-hyemin-b mx-0.5 text-lg text-custom-red">
+                  <span className="im-hyemin-b mx-0.5 text-base text-custom-red md:text-lg">
                     마카롱
                   </span>{" "}
-                  에 대한 기록을 가장 많이 했어요.
+                  을 가장 많이 기록했어요.
                 </p>
               </div>
             </div>
           </div>
           <div className="flex w-full flex-col items-start">
-            <div className="im-hyemin-b pb-5 text-[22px] text-white">
+            <div className="im-hyemin-b pb-5 text-lg text-white md:text-[22px]">
               <span className="text-[#ffaaa8]">행복 칼로리</span> 높은 디저트는?
             </div>
             <div className="grid w-full grid-cols-3 gap-2">
@@ -175,8 +221,12 @@ const MyPage: NextPage = () => {
                     className="rotate-[30deg]"
                   />
                 </div>
-                <span className="im-hyemin-r mt-2 text-white">디저트 이름</span>
-                <span className="im-hyemin-b text-custom-red">87kcal</span>
+                <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
+                  디저트 이름
+                </span>
+                <span className="im-hyemin-b text-base text-custom-red md:text-lg">
+                  87kcal
+                </span>
               </div>
               <div className="flex flex-col items-center text-lg">
                 <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
@@ -187,8 +237,12 @@ const MyPage: NextPage = () => {
                     height={83}
                   />
                 </div>
-                <span className="im-hyemin-r mt-2 text-white">디저트 이름</span>
-                <span className="im-hyemin-b text-custom-red">87kcal</span>
+                <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
+                  디저트 이름
+                </span>
+                <span className="im-hyemin-b text-base text-custom-red md:text-lg">
+                  87kcal
+                </span>
               </div>
               <div className="flex flex-col items-center text-lg">
                 <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
@@ -200,8 +254,12 @@ const MyPage: NextPage = () => {
                     className="rotate-12"
                   />
                 </div>
-                <span className="im-hyemin-r mt-2 text-white">디저트 이름</span>
-                <span className="im-hyemin-b text-custom-red">87kcal</span>
+                <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
+                  디저트 이름
+                </span>
+                <span className="im-hyemin-b text-base text-custom-red md:text-lg">
+                  87kcal
+                </span>
               </div>
             </div>
           </div>
@@ -210,12 +268,14 @@ const MyPage: NextPage = () => {
           <button
             type="button"
             className="mr-[21px] rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
+            onClick={handleLogout}
           >
             로그아웃
           </button>
           <button
             type="button"
             className="mr-[21px] rounded-md bg-white px-[9px] py-[6px] text-custom-red"
+            onClick={handleDeleteAccount}
           >
             탈퇴하기
           </button>
@@ -258,10 +318,60 @@ const MyPage: NextPage = () => {
       )}
       {isOpenProfileUpdate && (
         <Modal closeModal={closeProfileUpdate}>
-          <div className="z-[9999] mx-auto w-full bg-white p-8">
-            <h2 className="im-hyemin-b text-center text-xl text-[#222222]">
+          <div className="z-[9999] mx-auto w-full bg-white px-4 py-6 md:p-8">
+            <h2 className="im-hyemin-b mb-5 text-center text-xl text-[#222222]">
               프로필 수정하기
             </h2>
+            <div className="mx-auto mb-6 flex h-[150px] w-[150px] flex-col items-center justify-end rounded-xl bg-custom-yellow">
+              <Image
+                src="/profile/no_pic.png"
+                width={130}
+                height={130}
+                alt="프로필 사진 없음"
+                className="mx-auto"
+              />
+            </div>
+            <div className="im-hyemin-r mx-auto mb-8 flex w-full flex-row items-center justify-around">
+              <label
+                htmlFor="file-input"
+                className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
+              >
+                파일 업로드
+              </label>
+              <input type="file" id="file-input" className="hidden" />
+              <button
+                type="button"
+                className="rounded-md bg-custom-red px-[9px] py-[6px] text-white"
+              >
+                기본 캐릭터로 변경
+              </button>
+              <button
+                type="button"
+                className="rounded-md border border-custom-red px-[9px] py-[6px] text-custom-red"
+              >
+                삭제하기
+              </button>
+            </div>
+            <input
+              type="text"
+              placeholder="닉네임을 적어주세요  ✏️"
+              className="im-hyemin-r mb-7 block w-full rounded-md border border-custom-red py-[10px] text-center text-[#222222] focus:outline-none"
+            />
+            <div className="im-hyemin-r mx-auto grid w-fit grid-cols-2 gap-x-10">
+              <button
+                type="button"
+                className="rounded-md border border-custom-red px-[9px] py-[6px] text-custom-red"
+                onClick={closeProfileUpdate}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="rounded-md bg-custom-purple px-[9px] py-[6px] text-white"
+              >
+                적용하기
+              </button>
+            </div>
           </div>
         </Modal>
       )}

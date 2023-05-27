@@ -52,8 +52,9 @@ const Home: NextPage = () => {
           </button>
         </section>
         <section className="mb-[32px] w-full">
-          <button
-            type="button"
+          <a
+            href="https://smore.im/quiz/OwsvT5xSgi"
+            target="_blank"
             className="flex w-full flex-col items-center justify-center rounded-lg bg-[#FCDCC0] px-[20px] py-3 text-sm text-[#725739]"
           >
             <span className="im-hyemin-b text-2xl tracking-wide">
@@ -69,7 +70,7 @@ const Home: NextPage = () => {
               alt="디저트 모음"
               className="mt-3"
             />
-          </button>
+          </a>
         </section>
         <section className="mb-[20px] w-full">
           <Calendar isWeeklyView={isWeeklyView} switchView={switchView} />
