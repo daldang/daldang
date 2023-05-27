@@ -3,13 +3,14 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 import {
+  addDays,
   format,
   isAfter,
-  startOfWeek,
-  addDays,
-  isSameWeek,
   isSameDay,
+  isSameWeek,
+  startOfWeek,
 } from "date-fns";
+import { DesertLogOutput } from "~/utils/type";
 
 interface IProps {
   switchView(): void;
@@ -18,7 +19,7 @@ interface IProps {
   onDateClick: any;
   prevWeek(): void;
   nextWeek(): void;
-  data?: any[];
+  data?: DesertLogOutput[];
 }
 
 const WeeklyCalendar = ({
