@@ -2,12 +2,12 @@
 import { useEffect, useState } from "react";
 
 import { type NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import { useS3Upload } from "next-s3-upload";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 import Swal from "sweetalert2";
 
@@ -53,6 +53,9 @@ const MyPage: NextPage = () => {
     { authorId: sessionData?.user.id || "" },
     { enabled: sessionData?.user !== undefined }
   );
+
+  // mutate, query
+  const { mutate: updateUser } = api.user.updateUser.useMutation();
 
   const [myInfo, setMyInfo] = useState({ image: "", name: "" });
   const [imageFile, setImageFile] = useState<File | undefined>();
@@ -122,21 +125,29 @@ const MyPage: NextPage = () => {
   };
 
   const handleSubmit = async () => {
+    if (!sessionData) {
+      return;
+    }
+
     let image = "";
     if (imageFile) {
       const { url } = await uploadToS3(imageFile);
       image = url;
     }
-    trpc.mutate(
+    updateUser(
       {
-        ...request,
-        authorId: sessionData?.user.id || "",
-        image: image,
+        userid: sessionData.user.id,
+        username: myInfo.name,
+        profileImage: image,
       },
       {
         onSuccess(data, variables, context) {
-          removeItem();
-          void router.push("/mypage");
+          setMyInfo({
+            name: data.name || myInfo.name,
+            image: data.image || image,
+          });
+          // close modal
+          // refresh <<-- state
         },
       }
     );
