@@ -22,4 +22,14 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+
+  delteUser: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.user.delete({
+        where: {
+          id: input.userId,
+        },
+      });
+    }),
 });
