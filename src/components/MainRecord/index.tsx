@@ -1,18 +1,9 @@
 import Image from "next/image";
 
 import { getDay } from "date-fns";
+import { type DesertLogOutput } from "~/utils/type";
 
-interface IProps {
-  data: {
-    content: string;
-    desertName: string;
-    score: number;
-    createdAt: Date;
-    desertCharacter: string;
-  };
-}
-
-const MainRecord = ({ data }: IProps) => {
+const MainRecord = ({ data }: { data: DesertLogOutput }) => {
   const date = ["일", "월", "화", "수", "목", "금", "토"];
 
   return (

@@ -1,3 +1,5 @@
+import { type RouterOutputs } from "./api";
+
 export type DesertCharacter =
   | "canele"
   | "eggBread"
@@ -18,3 +20,5 @@ export const arrayDesertCharacter: Array<DesertCharacter> = [
   "fishBread",
   "mochi",
 ];
+
+export type DesertLogOutput = RouterOutputs["desertLog"]["createDesertLog"];

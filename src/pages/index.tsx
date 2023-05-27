@@ -88,18 +88,7 @@ const Home: NextPage = () => {
         </section>
         <section className="grid w-full grid-cols-1 gap-y-[20px]">
           {desertLogs &&
-            desertLogs.map((log) => (
-              <MainRecord
-                key={log.id}
-                data={{
-                  content: log.content,
-                  desertName: log.desertName,
-                  createdAt: log.createdAt,
-                  desertCharacter: log.desertCharacter,
-                  score: log.score,
-                }}
-              />
-            ))}
+            desertLogs.map((log) => <MainRecord key={log.id} data={log} />)}
         </section>
         <section className="mt-3 w-full px-4">
           <AuthShowcase />
