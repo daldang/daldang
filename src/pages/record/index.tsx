@@ -25,7 +25,7 @@ export default function RecordPage({}: InferGetServerSidePropsType<
 
   const handleNextStep = () => {
     if (!request.desertCharacter) {
-      Swal.fire({
+      void Swal.fire({
         icon: "error",
         iconColor: "#FFAAA8",
         title:
