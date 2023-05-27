@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { ButtonPrimary, ButtonSecondary } from "~/components/Button";
 import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { api } from "~/utils/api";
+import { useSessionStorageRequestState } from "~/utils/hook";
 
 export default function RecordsPage({
   sessionData,
@@ -18,6 +19,7 @@ export default function RecordsPage({
     id: router.query.id as string,
   }).data;
   const deleteDesertLog = api.desertLog.deleteDesertLog.useMutation();
+  const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
 
   if (!record) {
     return <div>record not found on id {router.query.id}</div>;
@@ -38,6 +40,11 @@ export default function RecordsPage({
         },
       }
     );
+  };
+
+  const handleEdit = () => {
+    setRequest({ ...record, image: record.image || "" });
+    void router.push("/record/add");
   };
 
   return (
@@ -93,8 +100,10 @@ export default function RecordsPage({
           <div className="p-5">{record.content}</div>
         </div>
         <div className="flex w-full justify-end gap-5">
-          <ButtonSecondary>수정하기</ButtonSecondary>
-          <ButtonPrimary>저장하기</ButtonPrimary>
+          <ButtonSecondary onClick={handleEdit}>수정하기</ButtonSecondary>
+          <Link href={"/"}>
+            <ButtonPrimary>저장하기</ButtonPrimary>
+          </Link>
         </div>
       </div>
     </>
