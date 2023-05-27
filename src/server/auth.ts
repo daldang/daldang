@@ -87,3 +87,17 @@ export const getServerAuthSession = (ctx: {
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
+
+export async function getServerSideSessionPropsOrRedirect(
+  context: GetServerSidePropsContext
+) {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return { redirect: { destination: "/signin" } };
+  }
+
+  return {
+    props: { sessionData: session },
+  };
+}

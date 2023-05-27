@@ -1,15 +1,21 @@
-import { type NextPage } from "next";
+import {
+  type GetServerSidePropsContext,
+  type InferGetServerSidePropsType,
+} from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ButtonPrimary } from "~/components/Button";
+        import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 import { useSessionStorageRequestState } from "~/utils/hook";
 import { arrayDesertCharacter, type DesertCharacter } from "~/utils/type";
 
-const RecordPage: NextPage = () => {
+export default function RecordPage({}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>) {
   const router = useRouter();
-
+  
   const [request, setRequest] = useSessionStorageRequestState();
 
   const handleSelecet = (charSelected: DesertCharacter) => {
@@ -99,9 +105,7 @@ const RecordPage: NextPage = () => {
       </div>
     </>
   );
-};
-
-export default RecordPage;
+}
 
 const DesertCharacterImage = ({
   char,
@@ -167,3 +171,8 @@ const convertName = (charName: DesertCharacter | string) => {
       return "모찌";
   }
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return getServerSideSessionPropsOrRedirect(context);
+}
+
