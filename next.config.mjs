@@ -24,6 +24,10 @@ const config = {
         protocol: "https",
         hostname: "**.com",
       },
+      {
+        protocol: "http",
+        hostname: "k.kakaocdn.net"
+      }
     ],
   },
 };
