@@ -40,12 +40,16 @@ const levelData = [
 ];
 
 const MyPage: NextPage = () => {
+  const { data: sessionData } = useSession();
+
+  // 레벨 안내 modal
   const {
     isOpenModal: isOpenLevelModal,
     clickModal: clickLevel,
     closeModal: closeLevel,
   } = useOpenModal();
 
+  // 내 정보 수정 modal
   const {
     isOpenModal: isOpenProfileUpdate,
     clickModal: clickProfileUpdate,
@@ -118,18 +122,32 @@ const MyPage: NextPage = () => {
           </div>
         </section>
         <section className="felx-row mb-8 flex w-full items-center justify-start px-4">
-          <div className="mr-6 flex h-[118px] w-[118px] items-center justify-center rounded-xl bg-transparent md:mr-[29px]">
-            <Image
-              src="/profile/profile_pic.png"
-              alt="prifile image"
-              width={118}
-              height={118}
-            />
-          </div>
+          {sessionData && sessionData.user ? (
+            <div className="mr-6 flex h-[118px] w-[118px] items-center justify-center rounded-xl bg-transparent md:mr-[29px]">
+              <Image
+                src={String(sessionData.user?.image)}
+                alt="prifile image"
+                width={118}
+                height={118}
+              />
+            </div>
+          ) : (
+            <div className="mr-6 flex h-[118px] w-[118px] flex-col items-center justify-end rounded-xl bg-custom-yellow md:mr-[29px]">
+              <Image
+                src="/profile/no_pic.png"
+                width={100}
+                height={100}
+                alt="프로필 사진 없음"
+                className="mx-auto"
+              />
+            </div>
+          )}
           <div className="flex flex-col items-start justify-between">
             <div className="mb-[26px] flex flex-col items-start">
               <span className="mb-[8px] text-xl leading-none text-[#222222] md:text-[22px]">
-                닉네임을 정해주세요
+                {sessionData && sessionData.user
+                  ? sessionData.user?.name
+                  : "닉네임을 정해주세요"}
               </span>
               <span className="im-hyemin-r flex flex-row items-center text-sm text-[#5c5c5c] md:text-base">
                 <button
