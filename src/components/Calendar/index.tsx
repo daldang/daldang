@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { useRouter } from "next/router";
 
 import { addMonths, subMonths, addWeeks, subWeeks } from "date-fns";
 
@@ -13,21 +15,25 @@ interface IProps {
 }
 
 const Calendar = ({ isWeeklyView, switchView }: IProps) => {
+  const router = useRouter();
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const onDateClick = (day: Date) => setSelectedDate(day);
+  const onDateClick = (day: Date) => {
+    setSelectedDate(day);
+
+    if (new Date()) {
+      void router.push("/record");
+    }
+  };
 
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
 
   const prevWeek = () => setCurrentWeek(subWeeks(currentWeek, 1));
   const nextWeek = () => setCurrentWeek(addWeeks(currentWeek, 1));
-
-  useEffect(() => {
-    console.log("selected date:: ", selectedDate);
-  }, [selectedDate]);
 
   return (
     <>
