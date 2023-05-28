@@ -152,6 +152,7 @@ export default function RecordAddPage({
               min={0}
               max={100}
               defaultValue={50}
+              value={request.score}
               onChange={(e) => {
                 setRequest({ ...request, score: e.target.valueAsNumber });
               }}
