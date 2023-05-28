@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
+import { type DesertLogOutput } from "~/utils/type";
 
 import { getServerSideSessionPropsOrRedirect } from "~/server/auth";
 
@@ -21,15 +22,16 @@ export default function Home({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
-  const [isWeeklyView, setIsWeeklyView] = useState(true);
-
-  const switchView = () => setIsWeeklyView(!isWeeklyView);
-
   let { data: desertLogs } = api.desertLog.getAllDesertLogs.useQuery(
     { authorId: sessionData?.user.id || "" },
     { enabled: sessionData?.user !== undefined }
   );
   desertLogs = desertLogs ? desertLogs : [];
+
+  const [isWeeklyView, setIsWeeklyView] = useState(true);
+  const [weeklyData, setWeeklyData] = useState<DesertLogOutput[]>([]);
+
+  const switchView = () => setIsWeeklyView(!isWeeklyView);
 
   return (
     <>
@@ -87,12 +89,16 @@ export default function Home({
             isWeeklyView={isWeeklyView}
             switchView={switchView}
             data={desertLogs}
+            setWeeklyData={setWeeklyData}
+            weeklyData={weeklyData}
           />
         </section>
-        <section className="grid w-full grid-cols-1 gap-y-[20px]">
-          {desertLogs &&
-            desertLogs.map((log) => <MainRecord key={log.id} data={log} />)}
-        </section>
+        {isWeeklyView && (
+          <section className="grid w-full grid-cols-1 gap-y-[20px]">
+            {weeklyData &&
+              weeklyData.map((log) => <MainRecord key={log.id} data={log} />)}
+          </section>
+        )}
       </div>
     </>
   );

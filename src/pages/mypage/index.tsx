@@ -370,8 +370,8 @@ export default function MyPage({
                 desertLogs
                   .sort((left, right) => right.score - left.score)
                   .map((log) => (
+                    <Link key={log.id} href={`/records/${log.id}`}>
                     <div
-                      key={log.id}
                       className="flex flex-col items-center text-lg"
                     >
                       <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
@@ -390,6 +390,7 @@ export default function MyPage({
                         {log.score.toString()}kcal
                       </span>
                     </div>
+                  </Link>
                   ))
               ) : (
                 <p className="flex w-full flex-row items-center justify-center pb-10 pt-6 font-light text-[#5d5d5d]">

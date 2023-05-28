@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -31,6 +32,15 @@ const WeeklyCalendar = ({
   nextWeek,
   data,
 }: IProps) => {
+  const [weeklyData, setWeeklyData] = useState<DesertLogOutput[]>([]);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setWeeklyData([...data]);
+    }
+    console.log(data);
+  }, [data]);
+
   return (
     <>
       <WeeklyHeader
@@ -42,7 +52,7 @@ const WeeklyCalendar = ({
         currentWeek={currentWeek}
         selectedDate={selectedDate}
         onDateClick={onDateClick}
-        data={data}
+        weeklyData={weeklyData}
       />
     </>
   );
@@ -109,14 +119,14 @@ interface IWCProps {
   currentWeek: Date;
   selectedDate?: Date;
   onDateClick: any;
-  data?: any[];
+  weeklyData: DesertLogOutput[];
 }
 
 const WeeklyCells = ({
   currentWeek,
   selectedDate,
   onDateClick,
-  data,
+  weeklyData,
 }: IWCProps) => {
   const router = useRouter();
 
@@ -126,17 +136,28 @@ const WeeklyCells = ({
   let day = startDate;
   let formattedDate = "";
 
+  const tempArr: any[] = Array.from({ length: 7 }, (_, i) => i);
+  for (let j = 0; j < weeklyData.length; j++) {
+    for (let i = 0; i < 7; i++) {
+      if (new Date(weeklyData[j]?.date || new Date()).getDay() === i) {
+        tempArr[i] = weeklyData[j];
+      } else {
+        tempArr[i] = false;
+      }
+    }
+  }
+
   for (let i = 0; i < 7; i++) {
     formattedDate = format(day, "d");
     const cloneDay = day;
+    console.log(i, isSameDay(day, weeklyData[i]?.date || new Date()));
+
     days.push(
       <div
         className={`im-hyemin-r relative block px-1 py-4 text-center text-sm text-[#7d7d7d] ${
           !isSameWeek(day, currentWeek)
             ? "disabled text-slate-300 "
-            : // : isSameDay(day, selectedDate)
-            // ? "im-hyemin-b "
-            format(currentWeek, "M") !== format(day, "M")
+            : format(currentWeek, "M") !== format(day, "M")
             ? "not-valid"
             : "valid"
         } ${
@@ -148,16 +169,17 @@ const WeeklyCells = ({
         }`}
         key={day.toString()}
       >
-        {data && isSameDay(day, data ? data[i]?.date : new Date()) ? (
+        {tempArr[i] !== false &&
+        isSameDay(day, tempArr[i]?.date || new Date()) ? (
           <button
             type="button"
             className="absolute left-0 right-0 top-1/2 mx-auto -translate-y-[50%]"
             onClick={() =>
-              void router.push(`/records/${data ? data[i]?.id : ""}`)
+              void router.push(`/records/${tempArr ? tempArr[i]?.id : ""}`)
             }
           >
             <Image
-              src={`/characters/${data[i]?.desertCharacter}.svg`}
+              src={`/characters/${tempArr[i]?.desertCharacter}.svg`}
               alt="marker"
               width={40}
               height={40}
