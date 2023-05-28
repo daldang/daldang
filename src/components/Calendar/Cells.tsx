@@ -20,6 +20,7 @@ interface IProps {
   selectedDate?: Date;
   onDateClick: any;
   data: DesertLogOutput[];
+  setMonthLength: any;
 }
 
 const RenderCells = ({
@@ -27,6 +28,7 @@ const RenderCells = ({
   selectedDate,
   onDateClick,
   data,
+  setMonthLength,
 }: IProps) => {
   const router = useRouter();
 
@@ -35,42 +37,46 @@ const RenderCells = ({
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
 
+  let currentMonthLength = 0;
+
   const rows = [];
   let days = [];
   let day = startDate;
   let formattedDate = "";
 
+  let memo = 0;
+
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, "d");
       const cloneDay = day;
+
       days.push(
         <div
           className={`relative block px-1 py-4 text-center text-sm text-[#7d7d7d] ${
-            !isSameMonth(day, monthStart)
-              ? "disabled text-[#C6C6C6] "
-              : // : isSameDay(day, selectedDate)
-              // ? "im-hyemin-b "
-              format(currentMonth, "M") !== format(day, "M")
-              ? "not-valid"
-              : "valid"
-          } ${
-            i === 0
+            i === 0 && isSameMonth(day, monthStart)
               ? "text-[#FF8986]"
               : i === 6
               ? "text-[#9CA0FF]"
               : "text-[#7d7d7d]"
+          } ${
+            !isSameMonth(day, monthStart)
+              ? "disabled text-[#C6C6C6] "
+              : format(currentMonth, "M") !== format(day, "M")
+              ? "not-valid"
+              : "valid"
           }`}
           key={day.toString()}
         >
-          {data[i] && isSameDay(day, data[i]?.date || new Date()) ? (
+          {data[memo] && isSameDay(day, data[memo]?.date || new Date()) ? (
             <button
               type="button"
-              className="absolute left-1 right-0 top-1/2 mx-auto w-full -translate-y-[50%] text-center"
-              onClick={() => void router.push(`/records/${data[i]?.id}`)}
+              className="absolute left-1 right-0 top-1/2 mx-auto w-full -translate-y-[50%] p-0 text-center"
+              onClick={() => void router.push(`/records/${data[memo]?.id}`)}
             >
               <Image
-                src={`/characters/${data[i]?.desertCharacter}.svg`}
+                src={`/characters/${data[memo]?.desertCharacter}.svg`}
+                // src="/markers/marker.svg"
                 alt="marker"
                 width={40}
                 height={40}
@@ -92,7 +98,11 @@ const RenderCells = ({
           )}
         </div>
       );
+      if (isSameMonth(day, monthStart)) {
+        currentMonthLength++;
+      }
       day = addDays(day, 1);
+      memo++;
     }
 
     rows.push(
@@ -102,6 +112,8 @@ const RenderCells = ({
     );
     days = [];
   }
+
+  setMonthLength(currentMonthLength);
 
   return (
     <div className="flex w-full flex-col gap-y-1 rounded-2xl bg-[#fefebf] px-2 py-4">

@@ -7,8 +7,6 @@ import {
   addDays,
   addMonths,
   addWeeks,
-  endOfMonth,
-  endOfWeek,
   isSameDay,
   startOfMonth,
   startOfWeek,
@@ -29,7 +27,9 @@ interface IProps {
   switchView(): void;
   data: DesertLogOutput[] | [];
   setWeeklyData: any;
-  weeklyData: DesertLogOutput[] | [];
+  weeklyData?: DesertLogOutput[] | [];
+  setWeeklyDataFull: any;
+  weeklyDataFull: DesertLogOutput[] | any[];
 }
 
 const Calendar = ({
@@ -38,6 +38,8 @@ const Calendar = ({
   data,
   setWeeklyData,
   weeklyData,
+  setWeeklyDataFull,
+  weeklyDataFull,
 }: IProps) => {
   const router = useRouter();
 
@@ -46,6 +48,9 @@ const Calendar = ({
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [monthLength, setMonthLength] = useState(0);
+  const [monthlyData, setMonthlyData] = useState<DesertLogOutput[] | []>([]);
 
   const onDateClick = (day: Date) => {
     setSelectedDate(day);
@@ -76,18 +81,52 @@ const Calendar = ({
       }
 
       const dataArr = [];
+      const dataArrFull: any[] = Array.from({ length: 7 }, () => false);
 
       for (let j = 0; j < data.length; j++) {
         for (let i = 0; i < days.length; i++) {
           if (isSameDay(days[i] || new Date(), data[j]?.date || new Date())) {
             dataArr.push(data[j]);
+            dataArrFull[i] = data[j];
           }
         }
       }
 
       setWeeklyData([...dataArr]);
+      setWeeklyDataFull([...dataArrFull]);
     }
-  }, [data, currentWeek]);
+  }, [currentWeek]);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const monthStart = startOfMonth(currentMonth);
+      const startDate = startOfWeek(monthStart);
+
+      let day = startDate;
+      const days = [];
+
+      for (let i = 0; i < monthLength; i++) {
+        const cloneDay = day;
+        days.push(cloneDay);
+
+        day = addDays(day, 1);
+      }
+
+      const dataArr: any[] = Array.from({ length: days.length }, () => false);
+      for (let j = 0; j < data.length; j++) {
+        for (let i = 0; i < days.length; i++) {
+          if (
+            isSameDay(days[i] || new Date(), data[j]?.date || new Date()) ||
+            new Date()
+          ) {
+            dataArr[i] = data[j];
+          }
+        }
+      }
+
+      setMonthlyData([...dataArr]);
+    }
+  }, [currentMonth]);
 
   return (
     <>
@@ -100,7 +139,7 @@ const Calendar = ({
             onDateClick={onDateClick}
             prevWeek={prevWeek}
             nextWeek={nextWeek}
-            data={weeklyData}
+            data={weeklyDataFull}
           />
         </div>
       ) : (
@@ -116,7 +155,8 @@ const Calendar = ({
             currentMonth={currentMonth}
             selectedDate={selectedDate}
             onDateClick={onDateClick}
-            data={data}
+            data={monthlyData}
+            setMonthLength={setMonthLength}
           />
         </div>
       )}

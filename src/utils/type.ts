@@ -8,7 +8,8 @@ export type DesertCharacter =
   | "muffin"
   | "croissant"
   | "fishBread"
-  | "mochi";
+  | "mochi"
+  | "cookie";
 
 export const arrayDesertCharacter: Array<DesertCharacter> = [
   "canele",
@@ -19,6 +20,7 @@ export const arrayDesertCharacter: Array<DesertCharacter> = [
   "croissant",
   "fishBread",
   "mochi",
+  "cookie",
 ];
 
 export const convertName = (charName: DesertCharacter | string) => {
@@ -39,6 +41,8 @@ export const convertName = (charName: DesertCharacter | string) => {
       return "붕어빵";
     case "mochi":
       return "모찌";
+    case "cookie":
+      return "쿠키";
     default:
       return charName;
   }

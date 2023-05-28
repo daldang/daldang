@@ -30,6 +30,7 @@ export default function Home({
 
   const [isWeeklyView, setIsWeeklyView] = useState(true);
   const [weeklyData, setWeeklyData] = useState<DesertLogOutput[]>([]);
+  const [weeklyDataFull, setWeeklyDataFull] = useState<DesertLogOutput[]>([]);
 
   const switchView = () => setIsWeeklyView(!isWeeklyView);
 
@@ -91,6 +92,8 @@ export default function Home({
             data={desertLogs}
             setWeeklyData={setWeeklyData}
             weeklyData={weeklyData}
+            setWeeklyDataFull={setWeeklyDataFull}
+            weeklyDataFull={weeklyDataFull}
           />
         </section>
         {isWeeklyView && (
