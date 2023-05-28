@@ -56,6 +56,32 @@ export const desertLogRouter = createTRPCRouter({
       });
     }),
 
+  updateDesertLog: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        authorId: z.string(),
+        location: z.string(),
+        score: z.number(),
+        content: z.string(),
+        image: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.desertLog.updateMany({
+        where: {
+          id: input.id,
+          authorId: input.authorId,
+        },
+        data: {
+          location: input.location,
+          score: input.score,
+          content: input.content,
+          image: input.image,
+        },
+      });
+    }),
+
   deleteDesertLog: protectedProcedure
     .input(z.object({ authorId: z.string(), desertLogId: z.string() }))
     .mutation(({ ctx, input }) => {

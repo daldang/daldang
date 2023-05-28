@@ -16,9 +16,10 @@ export default function RecordsPage({
   sessionData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
+  const recordId = router.query.id as string;
 
   const record = api.desertLog.getDesertLogById.useQuery({
-    id: router.query.id as string,
+    id: recordId,
   }).data;
 
   const deleteDesertLog = api.desertLog.deleteDesertLog.useMutation();
@@ -26,7 +27,7 @@ export default function RecordsPage({
   const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
 
   if (!record) {
-    return <div>record not found on id {router.query.id}</div>;
+    return <div>record not found on id {recordId}</div>;
   }
 
   if (!sessionData) {
@@ -49,7 +50,7 @@ export default function RecordsPage({
 
   const handleEdit = () => {
     setRequest({ ...record, image: record.image || "" });
-    void router.push("/record/add");
+    void router.push(`/records/${recordId}/update`);
   };
 
   return (
