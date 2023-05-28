@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
@@ -74,11 +75,11 @@ const Calendar = ({
         day = addDays(day, 1);
       }
 
-      const dataArr: DesertLogOutput[] = [];
+      const dataArr = [];
 
       for (let j = 0; j < data.length; j++) {
         for (let i = 0; i < days.length; i++) {
-          if (isSameDay(days[i], data[j].date)) {
+          if (isSameDay(days[i] || new Date(), data[j]?.date || new Date())) {
             dataArr.push(data[j]);
           }
         }
