@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { addMonths, addWeeks, subMonths, subWeeks } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  endOfMonth,
+  endOfWeek,
+  isSameDay,
+  startOfMonth,
+  startOfWeek,
+  subMonths,
+  subWeeks,
+} from "date-fns";
 
 import { useSessionStorageRequestState } from "~/utils/hook";
 import { type DesertLogOutput } from "~/utils/type";
@@ -15,10 +26,18 @@ import WeeklyCalendar from "./WeeklyCalendar";
 interface IProps {
   isWeeklyView: boolean;
   switchView(): void;
-  data: DesertLogOutput[];
+  data: DesertLogOutput[] | [];
+  setWeeklyData: any;
+  weeklyData: DesertLogOutput[] | [];
 }
 
-const Calendar = ({ isWeeklyView, switchView, data }: IProps) => {
+const Calendar = ({
+  isWeeklyView,
+  switchView,
+  data,
+  setWeeklyData,
+  weeklyData,
+}: IProps) => {
   const router = useRouter();
 
   const [request, setRequest] = useSessionStorageRequestState();
@@ -42,6 +61,33 @@ const Calendar = ({ isWeeklyView, switchView, data }: IProps) => {
   const prevWeek = () => setCurrentWeek(subWeeks(currentWeek, 1));
   const nextWeek = () => setCurrentWeek(addWeeks(currentWeek, 1));
 
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const startDate = startOfWeek(currentWeek);
+      let day = startDate;
+      const days = [];
+
+      for (let i = 0; i < 7; i++) {
+        const cloneDay = day;
+        days.push(cloneDay);
+
+        day = addDays(day, 1);
+      }
+
+      const dataArr: DesertLogOutput[] = [];
+
+      for (let j = 0; j < data.length; j++) {
+        for (let i = 0; i < days.length; i++) {
+          if (isSameDay(days[i], data[j].date)) {
+            dataArr.push(data[j]);
+          }
+        }
+      }
+
+      setWeeklyData([...dataArr]);
+    }
+  }, [data, currentWeek]);
+
   return (
     <>
       {isWeeklyView ? (
@@ -53,7 +99,7 @@ const Calendar = ({ isWeeklyView, switchView, data }: IProps) => {
             onDateClick={onDateClick}
             prevWeek={prevWeek}
             nextWeek={nextWeek}
-            data={data}
+            data={weeklyData}
           />
         </div>
       ) : (

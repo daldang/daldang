@@ -135,7 +135,7 @@ export default function RecordAddPage({
                 height={27}
               />
               <input
-                className="ml-2 py-2 text-sm text-custom-red"
+                className="ml-2 py-2 pl-1 text-sm text-custom-red"
                 placeholder="위치를 입력하세요"
                 onChange={(e) =>
                   setRequest({ ...request, location: e.target.value })
@@ -144,26 +144,6 @@ export default function RecordAddPage({
             </div>
           </div>
         </div>
-        <textarea
-          className="mt-2 w-full border border-slate-100 p-2 text-center text-sm placeholder:align-middle"
-          rows={5}
-          placeholder="디저트 기록을 작성하세요"
-          value={request.content}
-          onChange={(e) => setRequest({ ...request, content: e.target.value })}
-        />
-        <div className="text text-primary">행복 칼로리</div>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          defaultValue={50}
-          value={request.score}
-          onChange={(e) => {
-            console.log(e.target.valueAsNumber);
-            setRequest({ ...request, score: e.target.valueAsNumber });
-          }}
-          className="range range-primary"
-        />
         <div className="flex w-full flex-row items-center">
           <div className="mt-5 flex w-full flex-col items-start justify-start">
             <p className="mb-3 text-left text-custom-red">행복 칼로리</p>
@@ -187,6 +167,18 @@ export default function RecordAddPage({
             <span>{request.score}kal</span>
           </div>
         </div>
+        <textarea
+          className="mt-4 w-full border border-slate-100 p-2 text-center text-sm placeholder:align-middle"
+          rows={5}
+          placeholder="디저트 기록을 작성하세요"
+          value={request.content}
+          onChange={(e) => setRequest({ ...request, content: e.target.value })}
+        />
+        {objectURL && (
+          <div className="w-full">
+            <Image src={objectURL} alt="image" width={500} height={500} />
+          </div>
+        )}
         <div className="mt-8 flex w-full justify-between">
           <FileInput onChange={handleFileChange} />
           <button
@@ -204,9 +196,6 @@ export default function RecordAddPage({
             완료!
           </ButtonPrimary>
         </div>
-        {objectURL && (
-          <Image src={objectURL} alt="image" width={500} height={500}></Image>
-        )}
       </div>
     </>
   );
