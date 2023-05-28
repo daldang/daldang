@@ -144,7 +144,7 @@ export default function RecordsPage({
         </div>
         <div
           className={`${
-            record.image ? "md:mt-30 mt-28" : "mt-20 md:mt-44"
+            record.image ? "md:mt-30 mt-28" : "mt-28 md:mt-44"
           } flex w-full justify-end gap-5 px-4 `}
         >
           <ButtonSecondary
