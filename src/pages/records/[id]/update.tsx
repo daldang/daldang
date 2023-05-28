@@ -170,7 +170,7 @@ export default function RecordUpdatePage({
             </div>
           </div>
           <div className="ml-3 h-full pt-6 text-sm text-custom-red">
-            <span>{request.score}kal</span>
+            <span>{request.score}kcal</span>
           </div>
         </div>
         <textarea

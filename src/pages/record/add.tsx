@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
@@ -8,6 +7,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import { format } from "date-fns";
 import Swal from "sweetalert2";
@@ -165,7 +165,7 @@ export default function RecordAddPage({
             </div>
           </div>
           <div className="ml-3 h-full pt-6 text-sm text-custom-red">
-            <span>{request.score}kal</span>
+            <span>{request.score}kcal</span>
           </div>
         </div>
         <textarea
