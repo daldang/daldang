@@ -126,8 +126,20 @@ export default function RecordsPage({
             dangerouslySetInnerHTML={{ __html: record.content }}
           />
         </div>
+        {record.image && (
+          <Image
+            className="ml-8"
+            src={record.image}
+            alt="image"
+            width={400}
+            height={400}
+          ></Image>
+        )}
         <div className="mt-20 flex w-full justify-end gap-5 px-4">
-          <ButtonSecondary onClick={handleEdit} className="im-hyemin-r rounded-md border border-custom-red bg-white px-2 py-1 text-custom-red">
+          <ButtonSecondary
+            onClick={handleEdit}
+            className="im-hyemin-r rounded-md border border-custom-red bg-white px-2 py-1 text-custom-red"
+          >
             수정하기
           </ButtonSecondary>
           <Link href={"/"}>
