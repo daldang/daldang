@@ -14,6 +14,7 @@ import {
   startOfWeek,
 } from "date-fns";
 import { DesertLogOutput } from "~/utils/type";
+import Link from "next/link";
 
 interface IProps {
   currentMonth: Date;
@@ -68,19 +69,17 @@ const RenderCells = ({
           key={day.toString()}
         >
           {data[memo] && isSameDay(day, data[memo]?.date) ? (
-            <button
-              type="button"
-              className="absolute left-1 right-0 top-1/2 mx-auto w-full -translate-y-[50%] p-0 text-center"
-              onClick={() => void router.push(`/records/${data[memo]?.id}`)}
+            <Link
+              className="absolute left-2 right-0 top-1/2 mx-auto w-full -translate-y-[50%] p-0 text-center"
+              href={`/records/${data[memo] ? data[memo]?.id : ""}`}
             >
               <Image
                 src={`/characters/${data[memo]?.desertCharacter}.svg`}
-                // src="/markers/marker.svg"
                 alt="marker"
                 width={40}
                 height={40}
               />
-            </button>
+            </Link>
           ) : (
             <button
               type="button"

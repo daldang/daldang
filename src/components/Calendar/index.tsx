@@ -133,7 +133,7 @@ const Calendar = ({
     if (data.length > 0 && !isWeeklyView) {
       void handleRefineMonthlyData();
     }
-  }, [!isWeeklyView]);
+  }, [monthLength]);
 
   return (
     <>
