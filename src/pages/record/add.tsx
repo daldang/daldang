@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
@@ -8,6 +7,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import { format } from "date-fns";
 import Swal from "sweetalert2";
@@ -151,19 +151,6 @@ export default function RecordAddPage({
           value={request.content}
           onChange={(e) => setRequest({ ...request, content: e.target.value })}
         />
-        <div className="text text-primary">행복 칼로리</div>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          defaultValue={50}
-          value={request.score}
-          onChange={(e) => {
-            console.log(e.target.valueAsNumber);
-            setRequest({ ...request, score: e.target.valueAsNumber });
-          }}
-          className="range range-primary"
-        />
         <div className="flex w-full flex-row items-center">
           <div className="mt-5 flex w-full flex-col items-start justify-start">
             <p className="mb-3 text-left text-custom-red">행복 칼로리</p>
@@ -172,6 +159,7 @@ export default function RecordAddPage({
               min={0}
               max={100}
               defaultValue={50}
+              value={request.score}
               onChange={(e) => {
                 setRequest({ ...request, score: e.target.valueAsNumber });
               }}
