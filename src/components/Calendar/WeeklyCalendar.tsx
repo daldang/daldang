@@ -179,7 +179,7 @@ const WeeklyCells = ({
             }
           >
             <Image
-              src={`/characters/${tempArr[i]?.desertCharacter}.svg`}
+              src="/markers/marker.svg"
               alt="marker"
               width={40}
               height={40}
