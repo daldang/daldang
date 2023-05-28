@@ -111,7 +111,7 @@ export default function RecordAddPage({
             />
           </button>
         </header>
-        <div className="flex w-full flex-row items-center justify-between">
+        <div className="flex w-full flex-row items-center justify-start">
           <div className="mr-5 flex h-[130px] w-[130px] items-center justify-center rounded-md bg-[#FFFFDB] md:h-[150px] md:w-[150px]">
             <Image
               src={`/characters/${request.desertCharacter}.svg`}
@@ -120,7 +120,7 @@ export default function RecordAddPage({
               height={100}
             />
           </div>
-          <div className="flex flex-col text-left">
+          <div className="flex flex-col text-left md:w-1/2">
             <span className="im-hyemin-b mb-1 text-2xl text-[#222222]">
               {request.desertName}
             </span>
@@ -175,7 +175,7 @@ export default function RecordAddPage({
           onChange={(e) => setRequest({ ...request, content: e.target.value })}
         />
         {objectURL && (
-          <div className="w-full">
+          <div className="mt-4 w-full">
             <Image src={objectURL} alt="image" width={500} height={500} />
           </div>
         )}

@@ -16,15 +16,19 @@ export default function RecordsPage({
   sessionData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
+
   const record = api.desertLog.getDesertLogById.useQuery({
     id: router.query.id as string,
   }).data;
+
   const deleteDesertLog = api.desertLog.deleteDesertLog.useMutation();
+
   const [request, setRequest, { removeItem }] = useSessionStorageRequestState();
 
   if (!record) {
     return <div>record not found on id {router.query.id}</div>;
   }
+
   if (!sessionData) {
     return <div> invalid state without session</div>;
   }
@@ -55,7 +59,7 @@ export default function RecordsPage({
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border-none border-slate-200 py-[40px] md:border-x">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border-x-0 border-slate-200 py-[40px] md:border-x">
         <header className="mb-[22px] flex w-full flex-row items-center justify-between px-4">
           <Link href="/">
             <Image
@@ -73,7 +77,7 @@ export default function RecordsPage({
           </button>
         </header>
         <div className="relative -z-10 flex w-full flex-col items-start justify-start pb-6 pl-12 pr-10">
-          <div className="absolute -top-6 left-0 right-0 mx-auto">
+          <div className="absolute -top-6 left-0 right-0 mx-auto md:-top-10">
             <Image
               width={512}
               height={493}
@@ -105,7 +109,7 @@ export default function RecordsPage({
               </div>
             </div>
           </div>
-          <div className="z-10 flex w-full flex-row items-end justify-between">
+          <div className="z-10 flex w-full flex-row items-end justify-between md:px-4">
             <div className="flex flex-row items-center text-[#9C9C67]">
               <div className="flex h-8 w-8 items-center justify-center">
                 <Image
@@ -122,11 +126,11 @@ export default function RecordsPage({
             </span>
           </div>
           <p
-            className="im-hyemin-r z-10 mt-3 px-4 text-sm text-[#595959]"
+            className="im-hyemin-r z-10 mt-3 px-4 text-sm text-[#595959] md:px-8"
             dangerouslySetInnerHTML={{ __html: record.content }}
           />
           {record.image && (
-            <div className="z-10 mt-28 w-full pl-3">
+            <div className="z-10 mt-28 w-full pl-3 md:mt-36 md:pl-6">
               <Image
                 src={record.image}
                 alt="image"
@@ -139,8 +143,8 @@ export default function RecordsPage({
         </div>
         <div
           className={`${
-            record.image ? "mt-28" : "mt-20"
-          } flex w-full justify-end gap-5 px-4`}
+            record.image ? "md:mt-30 mt-28" : "mt-20 md:mt-44"
+          } flex w-full justify-end gap-5 px-4 `}
         >
           <ButtonSecondary
             onClick={handleEdit}
