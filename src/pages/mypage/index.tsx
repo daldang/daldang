@@ -83,10 +83,12 @@ export default function MyPage({
       return map;
     }, emptyMap) || emptyMap;
   const frequentChar: string = convertName(
-    Array.from(charToCount.keys()).reduce((left, right) =>
-      (charToCount.get(left) || 0) > (charToCount.get(right) || 0)
-        ? left
-        : right
+    Array.from(charToCount.keys()).reduce(
+      (left, right) =>
+        (charToCount.get(left) || 0) > (charToCount.get(right) || 0)
+          ? left
+          : right,
+      ""
     )
   );
 
@@ -371,26 +373,24 @@ export default function MyPage({
                   .sort((left, right) => right.score - left.score)
                   .map((log) => (
                     <Link key={log.id} href={`/records/${log.id}`}>
-                    <div
-                      className="flex flex-col items-center text-lg"
-                    >
-                      <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
-                        <Image
-                          src={`/characters/${log.desertCharacter}.svg`}
-                          alt="디저트 그림"
-                          width={113}
-                          height={62}
-                          className="rotate-[30deg]"
-                        />
+                      <div className="flex flex-col items-center text-lg">
+                        <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
+                          <Image
+                            src={`/characters/${log.desertCharacter}.svg`}
+                            alt="디저트 그림"
+                            width={113}
+                            height={62}
+                            className="rotate-[30deg]"
+                          />
+                        </div>
+                        <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
+                          {log.desertName}
+                        </span>
+                        <span className="im-hyemin-b text-base text-custom-red md:text-lg">
+                          {log.score.toString()}kcal
+                        </span>
                       </div>
-                      <span className="im-hyemin-b mt-2 text-sm text-white md:text-base">
-                        {log.desertName}
-                      </span>
-                      <span className="im-hyemin-b text-base text-custom-red md:text-lg">
-                        {log.score.toString()}kcal
-                      </span>
-                    </div>
-                  </Link>
+                    </Link>
                   ))
               ) : (
                 <p className="flex w-full flex-row items-center justify-center pb-10 pt-6 font-light text-[#5d5d5d]">
