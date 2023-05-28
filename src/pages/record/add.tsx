@@ -175,6 +175,9 @@ export default function RecordAddPage({
             <span>{request.score}kal</span>
           </div>
         </div>
+        {objectURL && (
+          <Image src={objectURL} alt="image" width={500} height={500}></Image>
+        )}
         <div className="mt-8 flex w-full justify-between">
           <FileInput onChange={handleFileChange} />
           <button
@@ -192,9 +195,6 @@ export default function RecordAddPage({
             완료!
           </ButtonPrimary>
         </div>
-        {objectURL && (
-          <Image src={objectURL} alt="image" width={500} height={500}></Image>
-        )}
       </div>
     </>
   );
