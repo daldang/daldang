@@ -159,10 +159,7 @@ const WeeklyCells = ({
         key={day.toString()}
       >
         {weeklyData[i] !== false &&
-        isSameDay(
-          day || new Date(),
-          (weeklyData[i] && weeklyData[i]?.date) || new Date()
-        ) ? (
+        isSameDay(day, weeklyData[i] && weeklyData[i]?.date) ? (
           <button
             type="button"
             className="absolute left-0 right-0 top-1/2 mx-auto -translate-y-[50%]"

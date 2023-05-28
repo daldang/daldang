@@ -19,7 +19,7 @@ interface IProps {
   currentMonth: Date;
   selectedDate?: Date;
   onDateClick: any;
-  data: DesertLogOutput[];
+  data: any[];
   setMonthLength: any;
 }
 
@@ -50,7 +50,6 @@ const RenderCells = ({
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, "d");
       const cloneDay = day;
-
       days.push(
         <div
           className={`relative block px-1 py-4 text-center text-sm text-[#7d7d7d] ${
@@ -68,7 +67,7 @@ const RenderCells = ({
           }`}
           key={day.toString()}
         >
-          {data[memo] && isSameDay(day, data[memo]?.date || new Date()) ? (
+          {data[memo] && isSameDay(day, data[memo]?.date) ? (
             <button
               type="button"
               className="absolute left-1 right-0 top-1/2 mx-auto w-full -translate-y-[50%] p-0 text-center"

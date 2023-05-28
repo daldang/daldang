@@ -25,7 +25,7 @@ import WeeklyCalendar from "./WeeklyCalendar";
 interface IProps {
   isWeeklyView: boolean;
   switchView(): void;
-  data: DesertLogOutput[] | [];
+  data: any[];
   setWeeklyData: any;
   weeklyData?: DesertLogOutput[] | [];
   setWeeklyDataFull: any;
@@ -67,7 +67,7 @@ const Calendar = ({
   const prevWeek = () => setCurrentWeek(subWeeks(currentWeek, 1));
   const nextWeek = () => setCurrentWeek(addWeeks(currentWeek, 1));
 
-  useEffect(() => {
+  const handleRefineWeeklyData = () => {
     if (data && data.length > 0) {
       const startDate = startOfWeek(currentWeek);
       let day = startDate;
@@ -95,15 +95,15 @@ const Calendar = ({
       setWeeklyData([...dataArr]);
       setWeeklyDataFull([...dataArrFull]);
     }
-  }, [currentWeek]);
+  };
 
-  useEffect(() => {
+  const handleRefineMonthlyData = () => {
     if (data && data.length > 0) {
       const monthStart = startOfMonth(currentMonth);
       const startDate = startOfWeek(monthStart);
 
       let day = startDate;
-      const days = [];
+      const days: any[] = [];
 
       for (let i = 0; i < monthLength; i++) {
         const cloneDay = day;
@@ -115,10 +115,7 @@ const Calendar = ({
       const dataArr: any[] = Array.from({ length: days.length }, () => false);
       for (let j = 0; j < data.length; j++) {
         for (let i = 0; i < days.length; i++) {
-          if (
-            isSameDay(days[i] || new Date(), data[j]?.date || new Date()) ||
-            new Date()
-          ) {
+          if (isSameDay(days[i], data[j] && data[j]?.date)) {
             dataArr[i] = data[j];
           }
         }
@@ -126,7 +123,17 @@ const Calendar = ({
 
       setMonthlyData([...dataArr]);
     }
-  }, [currentMonth]);
+  };
+
+  useEffect(() => {
+    void handleRefineWeeklyData();
+  }, [currentWeek]);
+
+  useEffect(() => {
+    if (data.length > 0 && !isWeeklyView) {
+      void handleRefineMonthlyData();
+    }
+  }, [!isWeeklyView]);
 
   return (
     <>
