@@ -32,13 +32,14 @@ const WeeklyCalendar = ({
   nextWeek,
   data,
 }: IProps) => {
-  const [weeklyData, setWeeklyData] = useState<DesertLogOutput[]>([]);
+  const [weeklyData, setWeeklyData] = useState<DesertLogOutput[] | boolean[]>(
+    []
+  );
 
   useEffect(() => {
     if (data && data.length > 0) {
       setWeeklyData([...data]);
     }
-    console.log(data);
   }, [data]);
 
   return (
@@ -119,7 +120,7 @@ interface IWCProps {
   currentWeek: Date;
   selectedDate?: Date;
   onDateClick: any;
-  weeklyData: DesertLogOutput[];
+  weeklyData: DesertLogOutput[] | any[];
 }
 
 const WeeklyCells = ({
@@ -136,21 +137,9 @@ const WeeklyCells = ({
   let day = startDate;
   let formattedDate = "";
 
-  const tempArr: any[] = Array.from({ length: 7 }, (_, i) => i);
-  for (let j = 0; j < weeklyData.length; j++) {
-    for (let i = 0; i < 7; i++) {
-      if (new Date(weeklyData[j]?.date || new Date()).getDay() === i) {
-        tempArr[i] = weeklyData[j];
-      } else {
-        tempArr[i] = false;
-      }
-    }
-  }
-
   for (let i = 0; i < 7; i++) {
     formattedDate = format(day, "d");
     const cloneDay = day;
-    console.log(i, isSameDay(day, weeklyData[i]?.date || new Date()));
 
     days.push(
       <div
@@ -169,17 +158,23 @@ const WeeklyCells = ({
         }`}
         key={day.toString()}
       >
-        {tempArr[i] !== false &&
-        isSameDay(day, tempArr[i]?.date || new Date()) ? (
+        {weeklyData[i] !== false &&
+        isSameDay(
+          day || new Date(),
+          (weeklyData[i] && weeklyData[i]?.date) || new Date()
+        ) ? (
           <button
             type="button"
             className="absolute left-0 right-0 top-1/2 mx-auto -translate-y-[50%]"
             onClick={() =>
-              void router.push(`/records/${tempArr ? tempArr[i]?.id : ""}`)
+              void router.push(
+                `/records/${weeklyData[i] ? weeklyData[i]?.id : ""}`
+              )
             }
           >
             <Image
-              src="/markers/marker.svg"
+              src={`/characters/${weeklyData[i]?.desertCharacter}.svg`}
+              // src="/markers/marker.svg"
               alt="marker"
               width={40}
               height={40}

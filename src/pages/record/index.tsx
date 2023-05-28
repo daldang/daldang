@@ -100,7 +100,7 @@ export default function RecordPage({}: InferGetServerSidePropsType<
         <div
           className={
             (request.desertCharacter === "" ? "" : "bg-white/70") +
-            " flex flex-wrap items-center justify-around p-2"
+            " grid w-full grid-cols-3 gap-2 px-2 py-6"
           }
         >
           {arrayDesertCharacter.map((char) => (
@@ -109,7 +109,7 @@ export default function RecordPage({}: InferGetServerSidePropsType<
               char={char}
               selected={request.desertCharacter}
               onSelect={handleSelecet}
-            ></DesertCharacterImage>
+            />
           ))}
         </div>
         <input
@@ -141,14 +141,18 @@ const DesertCharacterImage = ({
 }) => {
   const size = sizeFromDesertCharacter(char);
   return (
-    <button onClick={() => onSelect(char)}>
+    <button
+      onClick={() => onSelect(char)}
+      type="button"
+      className="flex items-center justify-center"
+    >
       <Image
         className={selected && char != selected ? "blur-[2px]" : ""}
         src={`/characters/${char}.svg`}
         alt={char}
         width={size.width}
         height={size.height}
-      ></Image>
+      />
     </button>
   );
 };
@@ -156,11 +160,11 @@ const DesertCharacterImage = ({
 const sizeFromDesertCharacter = (char: DesertCharacter) => {
   switch (char) {
     case "croissant":
-      return { width: 134.9, height: 127.45 };
+      return { width: 108.53, height: 79.58 };
     case "eggBread":
       return { width: 114.48, height: 94.23 };
     case "macaroon":
-      return { width: 162.96, height: 125.66 };
+      return { width: 108.53, height: 79.58 };
     case "muffin":
       return { width: 112.01, height: 104.87 };
     case "canele":
@@ -171,6 +175,8 @@ const sizeFromDesertCharacter = (char: DesertCharacter) => {
       return { width: 95.76, height: 82.47 };
     case "mochi":
       return { width: 95.76, height: 82.47 };
+    case "cookie":
+      return { width: 90, height: 90 };
   }
 };
 
