@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
@@ -54,55 +55,85 @@ export default function RecordsPage({
         <meta name="description" content="디저트 기록 일지 달당" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="im-hyemin-b  mx-auto flex min-h-screen max-w-lg flex-col gap-5 border border-slate-300 bg-white p-4">
-        <section className="mb-[22px] flex w-full flex-row items-center justify-between">
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-start border-none border-slate-200 py-[40px] md:border-x">
+        <header className="mb-[22px] flex w-full flex-row items-center justify-between px-4">
           <Link href="/">
-            <div className="">
-              <Image
-                src="/logo/logo_main.svg"
-                alt="메인 로고"
-                width={50}
-                height={50}
-              />
-            </div>
+            <Image
+              src="/logo/logo_main.svg"
+              alt="메인 로고"
+              width={50}
+              height={50}
+            />
           </Link>
           <button
-            className="h-[50px] w-[50px] rounded-2xl bg-primary/50"
+            className="flex h-[50px] w-[50px] items-center justify-center rounded-md bg-primary/50 text-2xl"
             onClick={handleDelete}
           >
             🗑️
           </button>
-        </section>
-        <div className="h-80 flex-col justify-start gap-10 bg-[#ffffdb]">
-          <div className="flex gap-5">
+        </header>
+        <div className="relative -z-10 flex w-full flex-col items-start justify-start pb-6 pl-12 pr-10">
+          <div className="absolute -top-6 left-0 right-0 mx-auto">
             <Image
-              className=""
-              src={`/characters/${record.desertCharacter}.svg`}
-              alt={record.desertCharacter}
-              width={150}
-              height={150}
+              width={512}
+              height={493}
+              src={`/images/record_bg_${record.image ? 2 : 1}.png`}
+              alt="background image"
             />
-            <div className="flex w-3/5 flex-col justify-end  p-0">
-              <div className="py-1 text-xl">{record.desertName}</div>
-              <div className="text-primary">{record.score} kcal</div>
-              <div className="mb-4 h-1 w-full rounded-full bg-primary">
+          </div>
+          <div className="z-10 mt-6 flex w-full flex-row items-end justify-start">
+            <div className="flex h-[130px] w-[130px] items-center justify-center md:h-[150px] md:w-[150px]">
+              <Image
+                src={`/characters/${record.desertCharacter}.svg`}
+                alt={record.desertCharacter}
+                width={110}
+                height={110}
+              />
+            </div>
+            <div className="ml-5 flex w-full flex-col items-start justify-end pb-3">
+              <span className="im-hyemin-b py-1 text-[22px] text-[#222222]">
+                {record.desertName}
+              </span>
+              <span className="text-sm text-custom-red">
+                {record.score} kcal
+              </span>
+              <div className="mb-4 mt-1 h-1 w-full rounded-full bg-primary">
                 <div
-                  className="h-1 w-1/12 rounded-full bg-red-500"
+                  className="h-1 w-full rounded-full bg-[#FF6562]"
                   style={{ width: `${record.score}%` }}
-                ></div>
+                />
               </div>
             </div>
           </div>
-          <div className="flex justify-between p-5">
-            <div className="text-[#9C9C67]">{record.location}</div>
-            <div>{record.date.toDateString().replaceAll("/", ".")}</div>
+          <div className="z-10 flex w-full flex-row items-end justify-between">
+            <div className="flex flex-row items-center text-[#9C9C67]">
+              <div className="flex h-8 w-8 items-center justify-center">
+                <Image
+                  src="/icons/icon_location_sm.svg"
+                  alt="장소 및 위치"
+                  width={23}
+                  height={27}
+                />
+              </div>
+              <span className="ml-2">{record.location}</span>
+            </div>
+            <span className="im-hyemin-r text-xs">
+              {format(record.date, "yy.MM.dd")}
+            </span>
           </div>
-          <div className="p-5">{record.content}</div>
+          <p
+            className="im-hyemin-r z-10 mt-3 px-4 text-sm text-[#595959]"
+            dangerouslySetInnerHTML={{ __html: record.content }}
+          />
         </div>
-        <div className="flex w-full justify-end gap-5">
-          <ButtonSecondary onClick={handleEdit}>수정하기</ButtonSecondary>
+        <div className="mt-20 flex w-full justify-end gap-5 px-4">
+          <ButtonSecondary onClick={handleEdit} className="im-hyemin-r rounded-md border border-custom-red bg-white px-2 py-1 text-custom-red">
+            수정하기
+          </ButtonSecondary>
           <Link href={"/"}>
-            <ButtonPrimary>저장하기</ButtonPrimary>
+            <ButtonPrimary className="im-hyemin-r rounded-md bg-custom-purple px-2 py-1 text-white">
+              저장하기
+            </ButtonPrimary>
           </Link>
         </div>
       </div>
