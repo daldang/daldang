@@ -139,7 +139,7 @@ const WeeklyCells = ({
   const tempArr: any[] = Array.from({ length: 7 }, (_, i) => i);
   for (let j = 0; j < weeklyData.length; j++) {
     for (let i = 0; i < 7; i++) {
-      if (new Date(weeklyData[j]?.date).getDay() === i) {
+      if (new Date(weeklyData[j]?.date || new Date()).getDay() === i) {
         tempArr[i] = weeklyData[j];
       } else {
         tempArr[i] = false;
@@ -150,7 +150,7 @@ const WeeklyCells = ({
   for (let i = 0; i < 7; i++) {
     formattedDate = format(day, "d");
     const cloneDay = day;
-    console.log(i, isSameDay(day, weeklyData[i]?.date));
+    console.log(i, isSameDay(day, weeklyData[i]?.date || new Date()));
 
     days.push(
       <div
