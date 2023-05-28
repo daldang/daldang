@@ -367,9 +367,13 @@ export default function MyPage({
             </div>
             <div className="grid w-full grid-cols-3 gap-2">
               {desertLogs && desertLogs.length > 0 ? (
-                desertLogs.map((log) => (
-                  <Link key={log.id} href={`/records/${log.id}`}>
-                    <div className="flex flex-col items-center text-lg">
+                desertLogs
+                  .sort((left, right) => right.score - left.score)
+                  .map((log) => (
+                    <Link key={log.id} href={`/records/${log.id}`}>
+                    <div
+                      className="flex flex-col items-center text-lg"
+                    >
                       <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.5)] md:h-32 md:w-32">
                         <Image
                           src={`/characters/${log.desertCharacter}.svg`}
@@ -387,7 +391,7 @@ export default function MyPage({
                       </span>
                     </div>
                   </Link>
-                ))
+                  ))
               ) : (
                 <p className="flex w-full flex-row items-center justify-center pb-10 pt-6 font-light text-[#5d5d5d]">
                   디저트 기록이 없어요 :(
